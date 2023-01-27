@@ -108,3 +108,105 @@ class Solution:
         
 
 总结： 虽然实际操作中使用dummyHead写法，常规操作非常考验细节。
+
+
+707.设计链表
+
+https://leetcode.cn/problems/design-linked-list/
+
+设计链表的实现。您可以选择使用单链表或双链表。单链表中的节点应该具有两个属性：val 和 next。val 是当前节点的值，next 是指向下一个节点的指针/引用。如果要使用双向链表，则还需要一个属性 prev 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
+
+在链表类中实现这些功能：
+
+get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。
+
+
+#单链表
+
+class Node(object):
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class MyLinkedList:
+
+    def __init__(self):
+        self.head = Node()
+        self.size = 0       # 设置一个链表长度的属性，便于后续操作，注意每次增和删的时候都要更新
+
+
+    def get(self, index: int) -> int:
+        if index < 0 or index >= self.size:
+            return -1
+        cur = self.head.next
+        while index:
+            cur = cur.next
+            index -= 1
+        return cur.val
+
+
+    def addAtHead(self, val: int) -> None:
+        newNode = Node(val)                 #定义新节点
+        newNode.next = self.head.next       #链接新节点的后半段，以防止断链后丢失
+        self.head.next = newNode            #链接前一节点和新节点
+        self.size += 1                      #长度+1
+
+
+
+    def addAtTail(self, val: int) -> None:
+        newNode = Node(val)                 #定义新节点
+        cur = self.head                     #定义头结点
+        while cur.next:                     #遍历
+            cur = cur.next
+        cur.next = newNode                  #链接末尾节点
+        self.size += 1                      #长度+1
+
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        if index < 0:
+            self.addAtHead(val)
+            return
+
+        if index == self.size:
+            self.addAtTail(val)
+            return
+
+        if index > self.size:
+            return
+
+
+        node = Node(val)
+        pre = self.head
+        while index:
+            pre = pre.next
+            index -= 1          #找到定位点
+
+        node.next = pre.next    #链接新节点和下一节点，以防止断链后丢失
+        pre.next = node         #前一节点和新节点链接
+        self.size += 1          #长度+1
+
+    def deleteAtIndex(self, index: int) -> None:
+        if index < 0 or index >= self.size:
+            return
+
+        pre = self.head
+        while index:                #遍历
+            pre = pre.next
+            index -= 1              #找到定位点
+        pre.next = pre.next.next    #删除
+        self.size -= 1              #长度-1
+
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+
