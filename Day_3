@@ -218,7 +218,7 @@ class MyLinkedList:
 
 #双链表
 class Node:
-    def __init__(self.val):
+    def __init__(self,val):
         self.val = val
         self.prev = None
         self.next = None
@@ -228,12 +228,12 @@ class MyLinkedList:
     
     def __init__(self):
         self._head, self._tail = Node(0), Node(0)                   #虚拟节点
-        self.head.next, self.tail.prev = self._tail, self._head     #从头往后，从后往前链接
+        self._head.next, self._tail.prev = self._tail, self._head     #从头往后，从后往前链接
         self._count = 0
         
     def _get_node(self, index: int) -> Node:
         if index >= self._count // 2:
-            node = self.tail
+            node = self._tail
             for _ in range(self._count - index):
                 node = node.prev                                    #当index大于_count // 2时， 从后往前查找更快
                 
@@ -248,7 +248,7 @@ class MyLinkedList:
 
     def get(self, index: int) -> int:
         
-        if 0 <= index < self.count:
+        if 0 <= index < self._count:
             node = self._get_node(index)
             return node.val
         
@@ -256,7 +256,7 @@ class MyLinkedList:
             return -1
             
     def _update(self, prev:Node, next:Node, val:int) -> None:
-        self.count+=1
+        self._count += 1
         node = Node(val)
         prev.next, next.prev = node, node
         node.prev, node.next = prev, next
@@ -277,11 +277,11 @@ class MyLinkedList:
         node = self._get_node(index)
         self._update(node.prev, node, val)
         
-     def deleteAtIndex(self, index:int) -> Node:
+    def deleteAtIndex(self, index:int) -> None:
         if 0 <= index < self._count:
-            node = self._get_node(inex)
+            node = self._get_node(index)
             self._count -= 1
-            node.prev.next, nede.next.prev = node.next, node.prev
+            node.prev.next, node.next.prev = node.next, node.prev
 
 
 
