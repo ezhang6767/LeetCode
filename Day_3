@@ -285,10 +285,47 @@ class MyLinkedList:
 
 
 
+206.反转链表
+
+https://leetcode.cn/problems/reverse-linked-list/
+
+题意：反转一个单链表。
+
+#双指针
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
 
-
-
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        cur = head
+        pre = None
+        while cur:
+            temp = cur.next
+            cur.next = pre
+            pre = cur
+            cur = temp
+        return pre    
+        
+#递归法
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        def reverse(pre, cur):
+            if not cur:
+                return pre
+                
+            tmp = cur.next
+            cur.next = pre
+            
+            return reverse(cur, tmp)
+            
+        return reverse(None,head)    
+       
+            
+            
 
 
 
