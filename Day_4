@@ -12,4 +12,61 @@ https://excalidraw.com/#json=ubA3F4HaZZK6gtfPGMbAj,hKdeSH6H1jf9S5EuFIo1jw
 3. 保存节点
 
 
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        dummyHead = ListNode(next=head)
+        cur = dummyHead
+
+        while cur.next and cur.next.next:   #需要至少两个节点才能交换
+            temp1 = cur.next                #记录断链的临时节点1
+            temp2 = cur.next.next.next      #记录断链的练市节点2
+
+
+            cur.next = cur.next.next        #链接步骤1
+            cur.next.next = temp1           #链接步骤2
+            cur.next.next.next = temp2      #链接步骤3
+
+            cur = cur.next.next             #cur ++ 2
+
+        return dummyHead.next
+        
+        
+19.删除链表的倒数第N个节点
+
+https://leetcode.cn/problems/remove-nth-node-from-end-of-list/
+
+解题思路：
+1. 画图
+2. 快慢指针模拟
+3. 慢指针需要停留在删除节点前一位。
+4. 快慢指针的间距 == 慢指针距离链表末尾的距离
+        
+        
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummyHead = ListNode(next=head)
+        slow, fast = dummyHead, dummyHead
+
+        while n:
+            fast = fast.next
+            n -= 1
+
+        fast = fast.next    #fast再提前走一步
+
+        while fast:         #也可以写成while fast.next,省略上一步
+            slow = slow.next
+            fast = fast.next
+
+        slow.next = slow.next.next
+        return dummyHead.next
