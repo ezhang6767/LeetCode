@@ -291,6 +291,11 @@ https://leetcode.cn/problems/reverse-linked-list/
 
 题意：反转一个单链表。
 
+注意事项：
+1. 看不懂就画图
+2. 
+
+
 #双指针
 
 class ListNode:
@@ -304,25 +309,25 @@ class Solution:
         cur = head
         pre = None
         while cur:
-            temp = cur.next
-            cur.next = pre
-            pre = cur
-            cur = temp
-        return pre    
+            temp = cur.next         #保存cur后面节点
+            cur.next = pre          #翻转链接
+            pre = cur               #pre ++
+            cur = temp              #cur ++
+        return pre                  #返回pre
         
 #递归法
 class Solution:
     def reverseList(self, head: ListNode) -> ListNode:
         def reverse(pre, cur):
             if not cur:
-                return pre
+                return pre          #确定终止条件
                 
-            tmp = cur.next
-            cur.next = pre
+            tmp = cur.next          #保存cur后面节点
+            cur.next = pre          #反转链接
             
-            return reverse(cur, tmp)
+            return reverse(cur, tmp)#继续反转
             
-        return reverse(None,head)    
+        return reverse(None,head)   #从表头整体反转
        
             
             
