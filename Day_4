@@ -70,3 +70,76 @@ class Solution:
 
         slow.next = slow.next.next
         return dummyHead.next
+        
+        
+        
+        
+面试题 02.07. 链表相交
+
+给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。
+
+https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/description/
+
+解题思路：
+1.求出两个链表的长度 
+2.求出两个链表长度的差值
+3.通过移动长链表表头，让两个链表末尾对齐
+4.比较curA和curB是否相同，如果不相同，同时向后移动curA和curB，如果遇到curA == curB，则找到交点。
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        lenA, lenB = 0, 0               #初始化A,B长度
+        cur = headA
+        while cur:                      #测量链A长度
+            cur = cur.next
+            lenA += 1
+        cur = headB
+        while cur:                      #测量链B长度
+            cur = cur.next
+            lenB += 1
+
+        curA, curB = headA, headB       
+
+        if lenA > lenB:                 #以curB为最长链表的长度，lenB为长度
+            curA, curB = curB, curA
+            lenA, lenB = lenB, lenA
+
+        for _ in range(lenB-lenA):      #让curB先遍历至curA相同位置
+            curB = curB.next
+
+        while curB:
+            if curB == curA:            #如果相同直接返回
+                return curB
+            else:                       #不同则继续遍历
+                curA, curB = curA.next, curB.next
+        return None                     #写不写都能AC
+
+
+#另一种简便写法：
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        if not headA or not headB:
+            return None
+        
+        cur_A = headA
+        cur_B = headB
+
+
+        while cur_A != cur_B:
+            cur_A = cur_A.next if cur_A else headB      #A链走完走B链
+            cur_B =cur_B.next if cur_B else headA       #B链走完走A链
+
+        return cur_B
