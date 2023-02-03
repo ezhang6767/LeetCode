@@ -143,3 +143,34 @@ class Solution:
             cur_B =cur_B.next if cur_B else headA       #B链走完走A链
 
         return cur_B
+        
+142.环形链表II
+
+https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#%E8%A1%A5%E5%85%85
+
+
+1.使用Floyd的乌龟和兔子算法来检测链表中是否有环。
+2.如果有环，使用两个指针，一个从头开始，另一个从交点开始。
+3.两个指针同时移动，直到相遇，这将是环的开始。
+
+        
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow, fast = head, head
+        while fast and fast.next:
+            slow, fast = slow.next, fast.next.next          #检测链表中是否有环
+
+            if slow == fast:                                #如果有环，从碰头点开始使用指针
+                p, q = head, slow
+                while p != q:
+                    p, q = p.next, q.next
+                return p                                    #相遇点为环的开始
+
+        return None
+                
