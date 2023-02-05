@@ -63,6 +63,7 @@ https://leetcode.cn/problems/intersection-of-two-arrays/
 2. 使用数组来做哈希的题目，是因为题目都限制了数值的大小。
 3. 而且如果哈希值比较少、特别分散、跨度非常大，使用数组就造成空间的极大浪费。
 
+#解法一：Hash Solution(dict)
 
 class Solution:
     def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
@@ -77,3 +78,23 @@ class Solution:
                 val_dict[num] = 0   #哈希数组值赋值为0防止重复查找
 
         return ans       
+
+#解法二：List Solution
+
+class Solution:
+    def intersection(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        nums1.sort()
+        nums2.sort()
+        i, j = 0, 0
+        res = []
+        while i < len(nums1) and j < len(nums2):
+            if nums1[i] == nums2[j]:
+                if not res or res[-1] != nums1[i]:      #去重; 或者用res = list(set(res))来去重
+                    res.append(nums1[i])
+                i += 1                                  #缩进所处的位置
+                j += 1
+            elif nums1[i] < nums2[j]:                   #因为是排序过的，i小了，i++
+                i += 1
+            else:
+                j += 1                                  #j小了，j++
+        return res
