@@ -153,6 +153,11 @@ class Solution:
 1. 两数之和
 https://leetcode.cn/problems/two-sum/
 
+注意事项：
+1.使用enumerate，可以把一个可遍历的对象（如列表、字符串）组成一个索引序列，同时列出数据和数据下标，一般用在 for 循环当中。
+2.使用 enumerate 可以直接得到数字的下标，而不需要再用 range 和 len 函数去计算，代码更简洁，容易理解。
+3.for i, num in enumerate(nums):可以这么写
+
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         record = {}
