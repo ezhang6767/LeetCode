@@ -149,3 +149,15 @@ class Solution:
             n = sum(int(i) ** 2 for i in str(n))        #int(i) ** 2 for i in int(n) 计算取值的简便写法
             print(n)
         return n == 1                                   #循环停止后判断n是否等于1
+        
+1. 两数之和
+https://leetcode.cn/problems/two-sum/
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        record = {}
+        for i in range(len(nums)):      
+            if (target - nums[i]) in record:        #遍历nums, 在record中寻找相匹配的值的下标（value）
+                return i, record[target-nums[i]]
+
+            record[nums[i]] = i                     #将值和下标，存入record中   
