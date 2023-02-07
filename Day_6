@@ -98,3 +98,54 @@ class Solution:
             else:
                 j += 1                                  #j小了，j++
         return res
+
+
+第202题. 快乐数
+
+编写一个算法来判断一个数 n 是不是快乐数。
+
+「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为  1，那么这个数就是快乐数。
+
+如果 n 是快乐数就返回 True ；不是，则返回 False 。
+
+https://leetcode.cn/problems/happy-number/description/
+
+思路解析：
+1. 判断sum是否重复出现是重点，需要哈希法。
+2. 求和过程，需要对取数值各个位上的单数操作熟悉掌握。
+
+
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        def calculate_happy(num):               #定义函数生成快乐数
+            sum_ = 0
+            while num:
+                sum_ += (num % 10) ** 2
+                num = num // 10
+
+            return sum_
+        
+        record = set()
+        
+        while True:
+            n = calculate_happy(n)              #代入生成函数
+            print(n)
+            if n == 1:                          #三种情况：等于1（Ture），出现过（False），没出现过（加入数组）
+                return True
+            
+            if n in record:
+                return False
+
+            else:
+                record.add(n)                   #添加进入set数组进行去重, 需要用add而不是append
+
+
+#集成解法（来自Chatgpt）
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        record = set()                                  #设定去重set集合
+        while n not in record:                          #当n重复出现时，说明产生循环，停止遍历
+            record.add(n)                       
+            n = sum(int(i) ** 2 for i in str(n))        #int(i) ** 2 for i in int(n) 计算取值的简便写法
+            print(n)
+        return n == 1                                   #循环停止后判断n是否等于1
