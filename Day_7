@@ -1,0 +1,36 @@
+Day 7
+第454题.四数相加II
+https://leetcode.cn/problems/4sum-ii/
+给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0。
+
+#dict解法
+class Solution:
+    def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+        hashmap = {}
+        for n1 in nums1:
+            for n2 in nums2:
+                if n1 + n2 in hashmap:
+                    hashmap[n1+n2] += 1         #更新hashmap里key的value
+                else:
+                    hashmap[n1+n2] = 1          #创建hashmap,或者用defaultdict
+        count = 0
+        for n3 in nums3:
+            for n4 in nums4:
+                if - n3 - n4 in hashmap:        #在hashmap里寻找匹配值
+                    count += hashmap[-n3-n4]    #更新计数器    
+        return count                            #需要return count
+
+
+#defaultdict解法        
+class Solution:
+    def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+        hashmap = collections.defaultdict(int)  #填入int允许在键不存在时将其初始值设置为0
+        for i in nums1:
+            for j in nums2:
+                hashmap[i+j] += 1
+        count = 0    
+        for i in nums3:
+            for j in nums4:
+                count += hashmap[-i-j]
+
+        return count
