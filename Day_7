@@ -101,3 +101,104 @@ class Solution:
                 record[ord(i)-ord('a')] -= 1
 
         return True
+        
+第15题. 三数之和
+
+给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+
+注意： 答案中不可以包含重复的三元组。
+
+https://leetcode.cn/problems/3sum/
+
+#双指针法
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        n = len(nums)
+        nums.sort()
+        for i in range(n):
+            left = i + 1
+            right = n - 1
+            #剪枝第一步，假设第一个数大于0直接返回
+            if nums[i] > 0:
+                break
+
+            if i > 0 and nums[i] == nums[i-1]:     #去重a
+                continue
+
+            while left < right:
+                total = nums[i] + nums[left] + nums[right]
+                if total > 0:
+                    right -= 1
+                
+                elif total < 0:
+                    left += 1
+
+                else:
+                    res.append([nums[i],nums[left],nums[right]])
+
+                    while left != right and nums[left] == nums[left+1]:     #去重b
+                        left += 1
+
+                    while right != left and nums[right] == nums[right-1]:    #去重c
+                        right -= 1  
+
+                    left += 1
+                    right -= 1
+
+        return res   
+        
+        
+#另一种去重b,c法
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        res = []
+        n = len(nums)
+        for i in range(n - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+            l, r = i + 1, n - 1
+            while l < r:
+                s = nums[i] + nums[l] + nums[r]
+                if s == 0:
+                    res.append([nums[i], nums[l], nums[r]])
+                    temp_l, temp_r = nums[l], nums[r]
+                    while l < r and nums[l] == temp_l:      #去重b，注意此写法包括了指针右移
+                        l += 1
+                    while l < r and nums[r] == temp_r:      #去重c，注意此写法包括了指针左移
+                        r -= 1
+                elif s < 0:
+                    l += 1
+                else:
+                    r -= 1
+        return res
+        
+#hashmap法，去重非常复杂
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        dic = {}
+        res = []
+        for i in range(len(nums)):
+            if nums[i] not in dic:
+                dic[nums[i]] = 1
+            else:
+                dic[nums[i]] += 1
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if 0 - nums[i] - nums[j] in dic:
+                
+                     '''当0-nums[i]-nums[j]等于nums[i]时，如果nums[i]出现次数小于2，则说明这个三元组不符合题意；
+                        当0-nums[i]-nums[j]等于nums[j]时，如果nums[j]出现次数小于2，则说明这个三元组不符合题意；
+                        当0-nums[i]-nums[j]不等于nums[i]且不等于nums[j]时，说明这个三元组符合题意。
+                        如果上述条件任意一个满足，则将这个三元组加入结果列表中。
+
+                        最后，对结果列表进行排序，并去重。'''
+                    
+                    if (0 - nums[i] - nums[j] == nums[i] and dic[nums[i]] >= 2) or (0 - nums[i] - nums[j] == nums[j] and dic[nums[j]] >= 2) or (0 - nums[i] - nums[j] != nums[i] and 0 - nums[i] - nums[j] != nums[j]):
+                        tmp = [nums[i], nums[j], 0 - nums[i] - nums[j]]
+                        
+                        tmp.sort()      #如果不对结果列表tmp进行排序，那么将无法确定结果列表中相同的三元组。因此，不排序的话，可能会得到重复的结果，无法正确去重。
+                        if tmp not in res:
+                            res.append(tmp)
+        return res
