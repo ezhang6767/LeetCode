@@ -91,7 +91,7 @@ class Solution:
         record = [0] * 26
 
         for i in magazine:
-            record[ord(i)-ord('a')] += 1
+            record[ord(i)-ord('a')] += 1            #掌握用数字表示字母的用法
 
         for i in ransomNote:
             if record[ord(i)-ord('a')] == 0:
