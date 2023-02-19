@@ -63,3 +63,53 @@ class Solution:
             i = i + 2*k                                 #寻找下一个切片起始点
 
         return s
+
+
+剑指Offer 05.替换空格
+
+https://leetcode.cn/problems/ti-huan-kong-ge-lcof/
+
+请实现一个函数，把字符串 s 中的每个空格替换成"%20"。
+
+示例 1： 输入：s = "We are happy."
+输出："We%20are%20happy."
+
+#解题思路
+
+首先扩充数组到每个空格替换成"%20"之后的大小。
+
+然后从后向前替换空格，也就是双指针法
+
+#简便写法
+class Solution:
+    def replaceSpace(self, s: str) -> str:
+        #split 把string通过空格拆分成list
+        #join 把list组合起来，''中的为组合分隔符
+        return '%20'.join(s.split(' '))
+        
+#双指针        
+class Solution:
+    def replaceSpace(self, s: str) -> str:
+        counter = s.count(' ') #count计算出空格数量
+
+        res = list(s)           #string转化为list
+
+        res.extend([' '] * counter * 2) #每遇到一个空格扩展2个位置
+
+        left, right = len(s) - 1, len(res) - 1  #一个指针从扩展后的数据从后往前写入数据，一个数据从原始数据位读取数据
+
+        while left >= 0:
+            if res[left] != ' ':
+                res[right] = res[left]      #如果不为空格， 从右边开始复制原string的数据
+                right -= 1
+
+            else:
+                #遇到空格，更改right -2, right - 1, right 的数值， 左闭右开
+                res[right - 2: right + 1] = '%20'   
+
+                right -= 3
+
+            left -= 1
+        return ''.join(res)     #list转换成string 
+
+        
