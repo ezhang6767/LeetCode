@@ -179,6 +179,51 @@ class Solution:
         s_list = [i for i in s.split(" ") if len(i) > 0]        #生成list同时去掉空格
         
         return " ".join(s_list[::-1])                           #倒叙合并list成为string
+
+
+题目：剑指Offer58-II.左旋转字符串        
+
+字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。
+
+请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
+
+https://leetcode.cn/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/
+
+#切片
+class Solution:
+    def reverseLeftWords(self, s: str, n: int) -> str:
+        return s[n:] + s[:n]
         
+        
+#非切片
+class Solution:
+    def reverseLeftWords(self, s: str, n: int) -> str:
+        s = list(s)
+        s[:n] = list(reversed(s[:n]))       #n以前reverse
+        s[n:] = list(reversed(s[n:]))       #n以后reverse
+        s.reverse()                         #集体reverse
+
+        return ''.join(s)                   #组合
+        
+        
+        
+#考虑不能用切片的情况下，利用模+下标实现
+class Solution:
+    def reverseLeftWords(self, s: str, n: int) -> str:
+        new_s = ''
+        for i in range(len(s)):
+            j = (i+n) % len(s)
+            new_s += s[j]
+        return new_s
+        
+# 另类的切片方法
+class Solution:
+    def reverseLeftWords(self, s: str, n: int) -> str:
+        m = len(s)
+        s = s+s
+        return s[n:n+m]
+        
+        
+
 
 
