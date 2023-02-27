@@ -1,1 +1,46 @@
+Day 9
 
+28. 实现 strStr()
+
+https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
+
+实现 strStr() 函数。
+
+给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。如果不存在，则返回  -1。
+
+示例 1: 输入: haystack = "hello", needle = "ll" 输出: 2
+
+示例 2: 输入: haystack = "aaaaa", needle = "bba" 输出: -1
+
+class Solution:
+    def strStr(self, haystack: str, needle: str) -> int:
+        a = len(needle)
+        b = len(haystack)
+        if a == 0:
+            return 0
+        next = self.getNext(a,needle)
+        p = -1
+        for j in range(b):
+            while p >= 0 and needle[p+1] != haystack[j]:    #当needle和haystack不相等的时候，去next模组找定位点
+                p = next[p]
+            if needle[p+1] == haystack[j]:                  #当needle和haystack相等的时候，needle下标右移
+                p += 1
+            if p == a-1:                                    #当needle下标到达尽头，haystack已经遍历过的长度(j+1)减去needle的长度(a)
+                return j-a+1
+        return -1
+
+
+    def getNext(self, a, needle):
+        next = ['' for i in range(a)]                       #初始化next数组  或者 [0] * a 数组更高效
+        k = -1                                              #初始化next数组下标
+        next[0] = k                                         #初始化next数组的第一个数值
+        for i in range(1, a):
+            while k > -1 and needle[k+1] != needle[i]:      #当不相同的时候，k = next数组里的值
+                k = next[k]
+
+            if needle[k+1] == needle[i]:                    #当值相同的时候，下标+1
+                k += 1
+
+            next[i] = k                                     # 将当前的next值保存在next数组中
+
+        return next
