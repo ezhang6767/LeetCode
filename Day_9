@@ -44,3 +44,34 @@ class Solution:
             next[i] = k                                     # 将当前的next值保存在next数组中
 
         return next
+459.重复的子字符串
+https://leetcode.cn/problems/repeated-substring-pattern/
+给定一个非空的字符串，判断它是否可以由它的一个子串重复多次构成。给定的字符串只含有小写英文字母，并且长度不超过10000。
+
+
+#KMP算法
+class Solution:
+    def repeatedSubstringPattern(self, s: str) -> bool:
+        if len(s) == 0:
+            return False            #当字符串s为空串时，next数组的长度为0，next[-1]不存在。
+        next = [0] * len(s)         #对整个字符串进行next数组计算
+        self.getNext(next, s)
+        if next[-1] != -1 and len(s) % (len(s) - (next[-1]+1)) == 0:    #如果next[-1]=-1, 说明s没有重复的子字符串
+            return True, print(next)                                    #s的长度能整除（s长度 - 最长公共前后缀的长度）即 s长度能整除一个最小重复子串说明True
+        return False, print(next)                                       #子串的长度为模式串的长度减去最长前缀后缀匹配长度再减去1
+
+    
+    def getNext(self, next, s):
+        next[0] = -1                                                    #初始化为-1
+        j = -1
+        for i in range(1, len(s)):                                      
+            while j >= 0 and s[i] != s[j+1]:                            #从第二个字符开始遍历模式串。
+                j = next[j]                                            
+            
+            if s[i] == s[j+1]:                                          #1.对于每个位置i，我们先向前移动指针j，
+                j += 1                                                  #直到找到一个位置j+1，使得s[0:j+1]是s[0:i+1]的一个后缀，
+                                                                        #并且s[j+1]等于s[i]。
+            next[i] = j                                                 #2.如果没有找到这样的位置，则说明s[0:i+1]没有最长前缀后缀
+                                                                        #此时next[i]=j
+        
+        return next
