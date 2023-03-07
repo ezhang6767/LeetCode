@@ -1,0 +1,57 @@
+232.用栈实现队列
+https://leetcode.cn/problems/implement-queue-using-stacks/
+使用栈实现队列的下列操作：
+
+push(x) -- 将一个元素放入队列的尾部。
+pop() -- 从队列首部移除元素。
+peek() -- 返回队列首部的元素。
+empty() -- 返回队列是否为空。
+
+解法：
+
+使用两个栈，一个作为输入栈，一个作为输出栈。push操作时将元素加入输入栈，pop/peek操作时判断输出栈是否为空，
+如果为空则将输入栈中的所有元素逐个取出并加入输出栈中，再进行操作。这样保证了输出栈中的元素顺序即为队列中的顺序。
+
+class MyQueue:
+
+    def __init__(self):
+        self.stack_in = []          #in for push
+        self.stack_out = []         #out for pop
+
+
+
+    def push(self, x: int) -> None:
+        self.stack_in.append(x)
+
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        if self.empty():
+            return None
+        if self.stack_out:
+            return self.stack_out.pop()
+        else:
+            for i in range(len(self.stack_in)):
+                self.stack_out.append(self.stack_in.pop())
+            return self.stack_out.pop()
+
+    def peek(self) -> int:
+        """Get the front element."""
+        if not self.stack_out:              #判断输出栈是否为空
+            while self.stack_in:            #如果输出栈为空，则将输入栈中的所有元素逐个取出并加入输出栈中：
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]           #返回输出栈的栈顶元素
+
+
+    def empty(self) -> bool:
+        return not (self.stack_in or self.stack_out)
+
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
