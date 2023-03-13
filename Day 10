@@ -41,7 +41,7 @@ class MyQueue:
         if not self.stack_out:              #判断输出栈是否为空
             while self.stack_in:            #如果输出栈为空，则将输入栈中的所有元素逐个取出并加入输出栈中：
                 self.stack_out.append(self.stack_in.pop())
-        return self.stack_out[-1]           #返回输出栈的栈顶元素
+        return self.stack_out[-1]           #返回输出栈的栈顶元素(最后加入的)
 
 
     def empty(self) -> bool:
@@ -55,3 +55,61 @@ class MyQueue:
 # param_2 = obj.pop()
 # param_3 = obj.peek()
 # param_4 = obj.empty()
+
+
+
+225. 用队列实现栈
+
+https://leetcode.cn/problems/implement-stack-using-queues/
+使用队列实现栈的下列操作：
+
+push(x) -- 元素 x 入栈
+pop() -- 移除栈顶元素
+top() -- 获取栈顶元素
+empty() -- 返回栈是否为空
+
+from collections import deque
+
+class MyStack:
+
+    def __init__(self):
+        self.queue_in = deque()             #store all data
+        self.queue_out = deque()            #store data when pop
+
+
+    def push(self, x: int) -> None:
+        self.queue_in.append(x)             #use append directly
+
+
+    def pop(self) -> int:
+        """
+        1. 首先确认不空
+        2. 因为队列的特殊性，FIFO，所以我们只有在pop()的时候才会使用queue_out
+        3. 先把queue_in中的所有元素（除了最后一个），依次出列放进queue_out
+        4. 交换in和out，此时out里只有一个元素
+        5. 把out中的pop出来，即是原队列的最后一个
+        
+        tip：这不能像栈实现队列一样，因为另一个queue也是FIFO，如果执行pop()它不能像
+        stack一样从另一个pop()，所以干脆in只用来存数据，pop()的时候两个进行交换
+        """
+        if self.empty():
+            return None
+        
+        for i in range(len(self.queue_in) - 1):
+            self.queue_out.append(self.queue_in.popleft())
+
+        self.queue_in, self.queue_out = self.queue_out, self.queue_in
+        return self.queue_out.popleft()         #此时out只剩一个元素
+
+    def top(self) -> int:
+        if self.empty():
+            return None                         #确认不空
+        
+        return self.queue_in[-1]                #仅有in会存放数据，返回第一个
+
+
+    def empty(self) -> bool:
+
+        return len(self.queue_in) == 0          #只需要判断in是不是有数据
+
+
