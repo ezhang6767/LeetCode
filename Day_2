@@ -20,20 +20,19 @@ https://leetcode.cn/problems/squares-of-a-sorted-array/
 
 class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
-        left, right, k = 0, len(nums)-1, len(nums)-1
-        result = [0] * len(nums)
-        while left <= right:
-            if nums[left]*nums[left] < nums[right]*nums[right]:
-                print(left,right,k)
-                result[k] = nums[right]*nums[right]
-                right -= 1
-
+        left = 0
+        right = len(nums)-1
+        i = len(nums)-1         #从右到左，从大到小
+        ans = [1] * len(nums)
+        while left <= right:    #如果是left<right， 最小的数字无法遍历到
+            if nums[left] * nums[left] < nums[right] * nums[right]:
+                ans[i] = nums[right] * nums[right]
+                right -= 1                
             else:
-                result[k] = nums[left]*nums[left]
-                print(left,right,k)
+                ans[i] = nums[left] * nums[left]
                 left += 1
-            k -= 1
-        return result
+            i -= 1
+        return ans
         
         
 209.长度最小的子数组
