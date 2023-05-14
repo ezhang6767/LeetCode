@@ -101,12 +101,12 @@ https://excalidraw.com/#json=_iRx_xhQy4N0NPaews3JF,P4RmAuSSQTOKARVgo-iaqQ
 
 class Solution:
     def generateMatrix(self, n: int) -> List[List[int]]:
-        nums = [[0]* n for _ in range(n)]
+        nums = [[0]* n for _ in range(n)]         #初始化二维数组
         startx, starty = 0, 0                     #起始点
         loop = n//2                               #迭代次数，每个圈循环几次，例如n为奇数3，那么loop = 1 只是循环一圈，矩阵中间的值需要单独处理 / offset的边界点为边n的中心
         mid = n//2                                #矩阵的中心点
         count = 1                                 #计数
-        offset = 1                          #需要控制每一条边遍历的长度，每次循环右边界收缩一位        
+        offset = 1                                #需要控制每一条边遍历的长度，每次循环右边界收缩一位        
         for offset in range(1, loop+1):       
             for i in range(starty, n-offset):     #从左到右
                 nums[startx][i] = count
@@ -123,7 +123,7 @@ class Solution:
             for i in range(n-offset,startx,-1):   #从下到上
                 nums[i][starty] = count
                 count += 1
-                
+            #第一圈结束，第二圈开始    
             #第二圈开始的时候，起始位置要各自加1， 例如：第一圈起始位置是(0, 0)，第二圈起始位置是(1, 1)    
             startx += 1
             starty += 1
