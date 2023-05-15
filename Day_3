@@ -38,15 +38,53 @@ class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
+        """初始条件 self.val = val 和 self.next = next 是在类的构造函数 __init__ 中设置节点对象的初始状态。
+
+            self.val = val 将传入的值 val 赋给节点对象的 val 属性，用于存储节点的值。
+
+            self.next = next 则将传入的 next 赋给节点对象的 next 属性，用于指向链表中的下一个节点。
+            
+            通过在构造函数中设置这些初始条件，我们可以在创建节点对象时指定节点的值和下一个节点的引用。
+            
+            例如：要创建一个节点对象，值为 5，且 next 属性为 288，可以按以下方式创建：
+            
+            node = ListNode(5, ListNode(288))
+            
+            在这里，我们调用 ListNode 类的构造函数，并传递两个参数。第一个参数是节点的值，即 5。第二个参数是一个新的 ListNode 对象，其中节点的值为 288。
+            
+            这样，我们就创建了一个节点对象，其值为 5，且 next 属性指向另一个节点，其值为 288。
+
+            请注意，在链表中，每个节点的 next 属性应该是指向下一个节点的引用，而不是直接使用下一个节点的值。因此，next 属性应该指向下一个节点对象，而不是节点值本身。"""        
+        
+        
+        
 class Solution:
     def removeElements(self, head: ListNode, val: int) -> ListNode:
         dummyHead = ListNode(next=head) #添加一个虚拟节点
         cur = dummyHead
         while cur.next:
+        
+        """while cur.next: 是一个循环条件，意味着当 cur.next 存在时（即不为 None），循环将继续执行。
+
+            在这个特定的代码片段中，cur 是一个用于遍历链表的变量，cur.next 表示当前节点的下一个节点。循环条件 while cur.next: 的含义是，只要当前节点的下一个节点存在（即链表尚未到达末尾），循环将一直执行。
+
+            循环体内的代码会根据当前节点的值进行一些操作，并将 cur 移动到链表中的下一个节点。如果 cur.next 为 None，则表示已经到达链表的末尾，循环将终止。
+
+            换句话说，while cur.next: 是用于遍历链表并进行相应处理的循环条件。它确保在链表尚未遍历完全之前，代码会继续执行循环体内的操作。"""
+            
             if cur.next.val == val:
                 cur.next = cur.next.next #删除cur.next节点
             else:
                 cur = cur.next
+                
+        """cur = cur.next 是将变量 cur 更新为当前节点的下一个节点。
+
+            在给定的代码片段中，cur 是一个用于遍历链表的变量。通过执行 cur = cur.next，将 cur 更新为当前节点的下一个节点。这样可以实现遍历链表的操作，将 cur 逐步移动到链表中的下一个节点。
+
+            例如，在 while 循环中，首先将 cur 初始化为哑节点 dummyHead，然后通过 cur = cur.next 来不断移动 cur，直到 cur.next 为 None，表示已经到达链表的末尾。
+
+            这种操作可以用于遍历链表，并在需要时对节点进行处理或执行其他操作。通过更新 cur，可以逐步访问链表中的每个节点。"""
+            
         return dummyHead.next
         
 
