@@ -86,7 +86,7 @@ https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/description/
 3.通过移动长链表表头，让两个链表末尾对齐
 4.比较curA和curB是否相同，如果不相同，同时向后移动curA和curB，如果遇到curA == curB，则找到交点。
 
-根据解题思路的写法：
+根据解题思路的写法(容易理解版本)：
 class Solution:
     def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
         pA, pB = headA, headB
