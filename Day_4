@@ -107,7 +107,7 @@ class Solution:
 
         curA, curB = headA, headB       
 
-        if lenA > lenB:                 #以curB为最长链表的长度，lenB为长度
+        if lenA > lenB:                 #以curB为最长链表的头，lenB为长度
             curA, curB = curB, curA
             lenA, lenB = lenB, lenA
 
