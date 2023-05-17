@@ -86,7 +86,43 @@ https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/description/
 3.通过移动长链表表头，让两个链表末尾对齐
 4.比较curA和curB是否相同，如果不相同，同时向后移动curA和curB，如果遇到curA == curB，则找到交点。
 
+根据解题思路的写法：
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        pA, pB = headA, headB
+        lenA, lenB = 0, 0
 
+        # 计算链表的长度
+        while pA:
+            lenA += 1
+            pA = pA.next
+        while pB:
+            lenB += 1
+            pB = pB.next
+
+        # 重新定位指针位置
+        """
+        重新定义 pA 和 pB 的目的是为了在重新定位指针位置时使用它们。
+        在第一次遍历链表后，pA 和 pB 分别指向了链表的末尾节点。
+        通过重新定义它们为 headA 和 headB，我们将它们重新指向链表的头部，以便进行第二次遍历。
+        """
+        pA, pB = headA, headB
+        if lenA > lenB:
+            for _ in range(lenA - lenB):
+                pA = pA.next
+        elif lenB > lenA:
+            for _ in range(lenB - lenA):
+                pB = pB.next
+
+        # 同时移动指针比较节点是否相同
+        while pA and pB:
+            if pA == pB:
+                return pA
+            pA = pA.next
+            pB = pB.next
+
+
+#写法变种：
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
@@ -119,7 +155,7 @@ class Solution:
                 return curB
             else:                       #不同则继续遍历
                 curA, curB = curA.next, curB.next
-        return None                     #写不写都能AC
+        return None                     #省略 return None 会使得函数在没有找到相交节点时不返回任何值。这可能与题目要求不符，因此最好在代码中明确写出 return None 来表示函数的返回值。这样可以提高代码的可读性和清晰性，使代码的意图更加明确。
 
 
 #另一种简便写法：
@@ -143,6 +179,23 @@ class Solution:
             cur_B =cur_B.next if cur_B else headA       #B链走完走A链
 
         return cur_B
+        
+        
+        """
+        pA = pA.next if pA else headB 和 pB = pB.next if pB else headA 是条件表达式，也称为三元表达式。它们的作用是在遍历链表时更新指针 pA 和 pB。
+
+        pA = pA.next if pA else headB 表示如果 pA 不为 None，则将 pA 更新为下一个节点 pA.next；否则，即 pA 为 None，将 pA 更新为链表 headB 的头部节点。
+        pB = pB.next if pB else headA 表示如果 pB 不为 None，则将 pB 更新为下一个节点 pB.next；否则，即 pB 为 None，将 pB 更新为链表 headA 的头部节点。
+        这样的更新方式可以实现两个指针 pA 和 pB 的同步移动，同时遍历两个链表。当指针 pA 遍历完链表 A 后，它会接着遍历链表 B，而指针 pB 会在遍历完链表 B 后接着遍历链表 A。
+        这样就能够平衡两个链表的长度差异，并在合适的时机进行节点比较，找到相交的节点或者判断两个链表不相交。
+
+        总结起来，pA = pA.next if pA else headB 表示更新指针 pA，如果 pA 不为 None，则向后移动一个节点；否则，将 pA 更新为链表 headB 的头部节点。
+        pB = pB.next if pB else headA 同理，表示更新指针 pB，如果 pB 不为 None，则向后移动一个节点；否则，将 pB 更新为链表 headA 的头部节点。
+        """
+        
+        
+        
+        
         
 142.环形链表II
 
