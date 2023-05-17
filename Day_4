@@ -45,7 +45,7 @@ https://leetcode.cn/problems/remove-nth-node-from-end-of-list/
 1. 画图
 2. 快慢指针模拟
 3. 慢指针需要停留在删除节点前一位。
-4. 快慢指针的间距 == 慢指针距离链表末尾的距离
+4. 快慢指针的间距 == 慢指针距离链表末尾的距离 == n+1
         
         
 # Definition for singly-linked list.
