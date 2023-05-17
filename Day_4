@@ -226,4 +226,44 @@ class Solution:
                 return p                                    #相遇点为环的开始
 
         return None
+        
+        
+        
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        slow = head
+        fast = head
+        has_cycle = False
+        
+        # 判断链表是否有环
+        while fast and fast.next:
+        """
+        while fast and fast.next 是一个条件判断语句，用于判断快指针 fast 和快指针的下一个节点 fast.next 是否都存在。
+
+        fast 表示当前的快指针节点。
+        fast.next 表示快指针的下一个节点。
+        在这个条件判断语句中，while 循环会继续执行的前提是 fast 和 fast.next 都不为 None。如果其中任一指针为 None，则意味着已经到达了链表的末尾，无法再向后移动，因此循环结束。
+
+        这个条件判断语句的作用是用来确定链表是否有环。快指针每次移动两步，而慢指针每次移动一步。如果链表中不存在环，那么快指针最终会先到达链表的末尾，即 fast 或 fast.next 会为 None，循环结束。如果链表中存在环，那么快指针和慢指针会在某个位置相遇，循环条件仍然为真，循环继续执行。
+
+        因此，while fast and fast.next 的作用是判断快指针和快指针的下一个节点是否都存在，以确定链表是否有环，并在有环的情况下继续执行循环。
+        """
+        
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                has_cycle = True
+                break
+        
+        # 如果链表没有环，则直接返回 None
+        if not has_cycle:
+            return None
+        
+        # 找到环的起始位置
+        slow = head
+        while slow != fast:
+            slow = slow.next
+            fast = fast.next
+        
+        return slow
                 
