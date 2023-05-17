@@ -32,7 +32,7 @@ class Solution:
             cur.next.next = temp1           #链接步骤2  cur.next.next
             cur.next.next.next = temp2      #链接步骤3  cur.next.next.next
 
-            cur = cur.next.next             #cur ++ 2
+            cur = cur.next.next             #cur ++ 2, 相当于重新给cur赋值
 
         return dummyHead.next
         
