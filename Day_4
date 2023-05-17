@@ -25,12 +25,12 @@ class Solution:
 
         while cur.next and cur.next.next:   #需要至少两个节点才能交换
             temp1 = cur.next                #记录断链的临时节点1
-            temp2 = cur.next.next.next      #记录断链的练市节点2
+            temp2 = cur.next.next.next      #记录断链的练市节点2***
 
 
-            cur.next = cur.next.next        #链接步骤1
-            cur.next.next = temp1           #链接步骤2
-            cur.next.next.next = temp2      #链接步骤3
+            cur.next = cur.next.next        #链接步骤1  cur.next
+            cur.next.next = temp1           #链接步骤2  cur.next.next
+            cur.next.next.next = temp2      #链接步骤3  cur.next.next.next
 
             cur = cur.next.next             #cur ++ 2
 
