@@ -8,6 +8,8 @@
 
 如果在做面试题目的时候遇到需要判断一个元素是否出现过的场景也应该第一时间想到哈希法。
 
+242.有效的字母异位词
+https://leetcode.cn/problems/valid-anagram/
 
 写法一（哈希表）：
 
@@ -54,6 +56,31 @@ class Solution:
         
         return s_count == t_count
         
+写法四：
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        # 如果两个字符串长度不相等，直接返回False
+        if len(s) != len(t):
+            return False
+        
+        # 使用字典记录s中每个字符的出现次数
+        counter = {}
+        for char in s:
+            counter[char] = counter.get(char, 0) + 1
+        
+        # 遍历t，减少对应字符的计数，若计数为0则从字典中删除
+        for char in t:
+            if char not in counter:
+                return False
+            counter[char] -= 1
+            if counter[char] == 0:
+                del counter[char]
+        
+        # 若字典为空，则s和t是有效的字母异位词
+        return not counter
+
+        
+        
 349. 两个数组的交集
 题意：给定两个数组，编写一个函数来计算它们的交集。
 https://leetcode.cn/problems/intersection-of-two-arrays/
@@ -62,6 +89,7 @@ https://leetcode.cn/problems/intersection-of-two-arrays/
 1. 输出结果中的每个元素一定是唯一的，也就是说输出的结果的去重的， 同时可以不考虑输出结果的顺序，可以使用哈希数据结构：unordered_set
 2. 使用数组来做哈希的题目，是因为题目都限制了数值的大小。
 3. 而且如果哈希值比较少、特别分散、跨度非常大，使用数组就造成空间的极大浪费。
+4. 直接使用set 不仅占用空间比数组大，而且速度要比数组慢，set把数值映射到key上都要做hash计算的。
 
 #解法一：Hash Solution(dict)
 
@@ -104,7 +132,8 @@ class Solution:
 
 编写一个算法来判断一个数 n 是不是快乐数。
 
-「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为  1，那么这个数就是快乐数。
+「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，
+也可能是 无限循环 但始终变不到 1。如果 可以变为  1，那么这个数就是快乐数。
 
 如果 n 是快乐数就返回 True ；不是，则返回 False 。
 
@@ -146,7 +175,7 @@ class Solution:
         record = set()                                  #设定去重set集合
         while n not in record:                          #当n重复出现时，说明产生循环，停止遍历
             record.add(n)                       
-            n = sum(int(i) ** 2 for i in str(n))        #int(i) ** 2 for i in int(n) 计算取值的简便写法
+            n = sum(int(i) ** 2 for i in str(n))        #****int(i) ** 2 for i in int(n) 计算取值的简便写法
             print(n)
         return n == 1                                   #循环停止后判断n是否等于1
         
@@ -165,4 +194,44 @@ class Solution:
             if (target - nums[i]) in record:        #遍历nums, 在record中寻找相匹配的值的下标（value）
                 return i, record[target-nums[i]]
 
-            record[nums[i]] = i                     #将值和下标，存入record中   
+            record[nums[i]] = i                     #将值和下标，存入record中
+            
+            
+            
+#enumerate解法
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_dict = {}  # 用于存储数字和索引的字典
+
+        for i, num in enumerate(nums):
+            complement = target - num  # 计算目标值与当前数字的差值
+
+            # 检查差值是否在字典中，如果在则返回对应的索引
+            if complement in num_dict:
+                return [num_dict[complement], i]
+
+            # 将当前数字添加到字典中
+            num_dict[num] = i
+
+        # 如果没有找到符合条件的结果，则返回空列表
+        return []
+
+            
+            
+            
+            
+在Python中，字典（dict）、集合（set）和冻结集合（frozenset）的底层实现都是基于哈希表（Hash Table）。
+
+哈希表是一种使用哈希函数（Hash Function）将键映射到存储位置的数据结构。它通过将键转换为哈希值，然后使用哈希值作为索引来存储和检索数据。哈希表的基本思想是将键映射到数组的索引位置上，从而实现快速的数据访问和操作。
+
+在Python中，哈希表的底层实现使用了数组（Array）和链表（Linked List）或红黑树（Red-Black Tree）。具体实现细节可能因Python版本和数据规模而有所不同，下面简要描述一种常见的哈希表实现方式：
+
+数组（Array）：哈希表使用一个固定大小的数组来存储数据。数组的每个元素称为桶（Bucket）或槽（Slot），每个桶可以存储一个键值对或一个链表或红黑树的根节点。
+
+哈希函数（Hash Function）：哈希函数将键转换为哈希值，通常是一个整数。哈希值用作数组的索引，决定了数据在数组中的存储位置。
+
+冲突解决策略：由于不同的键可能会映射到相同的哈希值，可能会发生冲突。为了解决冲突，哈希表使用链表或红黑树来处理具有相同哈希值的键。当发生冲突时，新的键值对会被插入到链表或红黑树中。
+
+扩容和重新哈希（Resize and Rehash）：当哈希表中的键值对数量增加到一定阈值时，哈希表会自动进行扩容和重新哈希操作，以保持哈希表的负载因子在合理范围内，并提供更好的性能。
+
+需要注意的是，具体的底层实现可能会因Python版本、哈希表大小和键值对数量等因素而有所不同。Python的哈希表实现经过了优化，具有较好的性能和灵活性，可以适应不同的数据规模和操作需求。
