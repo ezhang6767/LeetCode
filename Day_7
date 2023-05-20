@@ -35,6 +35,37 @@ class Solution:
 
         return count
 
+#使用Counter法
+from collections import Counter
+
+class Solution:
+    def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+        counter = Counter()
+        count = 0
+        # 统计nums1和nums2中元素的和出现的次数
+        for num1 in nums1:
+            for num2 in nums2:
+                counter[num1+num2] += 1
+        
+        # 检查nums3和nums4中元素的负和是否在counter中出现，如果出现则累加对应的次数
+        for num3 in nums3:
+            for num4 in nums4:
+                complement = -(num3+num4)
+                count += counter.get(complement,0)
+            """
+        在代码中，counter.get(complement, 0)中的0表示在字典counter中获取键complement对应的值。如果键complement存在于字典中，那么就返回对应的值；如果键complement不存在于字典中，那么就返回默认值0。
+
+具体来说，counter.get(complement, 0)的作用是获取字典counter中键complement对应的值，如果键不存在，则返回0。这样做的目的是避免在键不存在时引发KeyError异常，而是返回一个默认值，确保代码的正常执行。
+
+        如果不使用counter.get(complement, 0)，而是直接使用counter[complement]来获取值，当键complement不存在时会引发KeyError异常，需要进行异常处理，增加代码的复杂性。而使用counter.get(complement, 0)则可以更简洁地处理键不存在的情况。
+            """
+        
+        return count
+        
+        
+        
+        
+        
 383. 赎金信        
 给定一个赎金信 (ransom) 字符串和一个杂志(magazine)字符串，判断第一个字符串 ransom 能不能由第二个字符串 magazines 里面的字符构成。如果可以构成，返回 true ；否则返回 false。
 
@@ -43,7 +74,7 @@ https://leetcode.cn/problems/ransom-note/
 
 
 
-#hash法        
+#hash法  -- 记录赎金信      
 class Solution:
     def canConstruct(self, ransomNote: str, magazine: str) -> bool:
         hashmap = dict()
@@ -64,6 +95,30 @@ class Solution:
                 return False
 
         return True
+#hash法 -- 记录杂志       
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        hashmap = dict()
+        
+        for i in magazine:
+            if i in hashmap:
+                hashmap[i] += 1
+            else:
+                hashmap[i] = 1
+
+        
+        for i in ransomNote:
+            if i not in hashmap or hashmap[i] == 0:
+                return False
+
+            else:
+                hashmap[i] -= 1
+
+        return True
+
+
+
+
 
 #使用defaultdict
 class Solution:
@@ -101,6 +156,25 @@ class Solution:
                 record[ord(i)-ord('a')] -= 1
 
         return True
+        
+#使用Counter        
+from collections import Counter
+
+class Solution:
+    def canConstruct(self, ransomNote: str, magazine: str) -> bool:
+        ransom_counter = Counter(ransomNote)
+        magazine_counter = Counter(magazine)
+
+        # 检查ransom_counter中的每个字符在magazine_counter中的出现次数是否大于等于ransom_counter中的出现次数
+        for char, count in ransom_counter.items():      #char represents the key of each key-value pair in ransom_counter, and count represents the corresponding value.
+            if count > magazine_counter.get(char,0):    #需要使用get function
+                return False
+
+        return True
+
+
+
+
         
 第15题. 三数之和
 
@@ -251,6 +325,46 @@ class Solution:
 
     
             
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        nums.sort()  # 先对数组进行排序
+        result = []
+        
+        for i in range(len(nums) - 3):
+            # 跳过重复的元素
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            
+            for j in range(i+1, len(nums) - 2):
+                # 跳过重复的元素
+                if j > i+1 and nums[j] == nums[j-1]:
+                    continue
+                
+                left = j + 1
+                right = len(nums) - 1
+                
+                while left < right:
+                    # 计算四数之和
+                    total = nums[i] + nums[j] + nums[left] + nums[right]
+                    
+                    if total < target:
+                        left += 1
+                    elif total > target:
+                        right -= 1
+                    else:
+                        # 找到一组满足条件的解
+                        result.append([nums[i], nums[j], nums[left], nums[right]])
+                        
+                        # 跳过重复的元素
+                        while left < right and nums[left] == nums[left+1]:
+                            left += 1
+                        while left < right and nums[right] == nums[right-1]:
+                            right -= 1
+                        
+                        left += 1
+                        right -= 1
+        
+        return result
 
 
 
