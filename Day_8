@@ -136,9 +136,12 @@ class Solution:
 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
 
 #思路
-1.移除多余空格
-2.将整个字符串反转
-3.将每个单词反转
+1.使用 trimSpace() 方法去除字符串 s 开头和结尾的空格，并去除单词之间多余的空格，返回一个字符数组 temp。
+2.使用 reverse() 方法翻转字符数组 temp，将整个字符串翻转。
+3.使用 reverseWord() 方法翻转每个单词，通过记录每个单词的起始位置 start 和结束位置 end，将每个单词进行翻转。
+4.最后使用 ''.join(l) 将字符数组 temp 转换为字符串返回。
+
+该解法的时间复杂度为 O(n)，其中 n 是字符串 s 的长度。
 
 https://leetcode.cn/problems/reverse-words-in-a-string/
 
