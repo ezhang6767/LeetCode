@@ -159,7 +159,7 @@ class Solution:
         while left <= right and s[right] == ' ':    #去除结尾的空格
             right -= 1
 
-        while left <= right:                        #去除单词中间多余的空格
+        while left <= right:                        #去除单词中间多余的空格,left需要等于right，才能把最后一个字母加入temp
             if s[left] != ' ':
                 temp.append(s[left])
             elif s[left-1] != ' ':
@@ -189,7 +189,7 @@ class Solution:
         l = self.trimSpace(s)                        #['t', 'h', 'e', ' ', 's', 'k', 'y', ' ', 'i', 's', ' ', 'b', 'l', 'u', 'e']
         print(l)
         self.reverseString(l, 0, len(l)-1)           #['e', 'u', 'l', 'b', ' ', 's', 'i', ' ', 'y', 'k', 's', ' ', 'e', 'h', 't']
-        self.reverseWord(l)                          #['b', 'l', 'u', 'e', ' ', 'i', 's', ' ', 's', 'k', 'y', ' ', 't', 'h', 'e']
+        self.reverseWord(l)                          #注意括号里面是l而不是s ['b', 'l', 'u', 'e', ' ', 'i', 's', ' ', 's', 'k', 'y', ' ', 't', 'h', 'e']
         return ''.join(l)                            #blue is sky the
 
 #调用内部函数
