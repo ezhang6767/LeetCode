@@ -1,5 +1,40 @@
 Day 9
 
+
+Next数组写法以及每一步打印
+
+class Solution:
+    def getNext(self, size, needle):
+        Next = [' ' for i in range(size)]
+        k = 0
+        Next[0] = k
+        for i in range(1, size):
+            while k > 0 and needle[k] != needle[i]:
+                k = Next[k - 1]
+            
+            if needle[k] == needle[i]:
+                k += 1
+
+            Next[i] = k
+
+            print("Next Array:", Next[:i+1])
+            print("i =", i, ", j =", k)
+            print("needle[i] =", needle[i], ", needle[j] =", needle[k])
+            print()
+        
+        return Next
+
+
+needle = 'aabaaf'
+size = len(needle)
+solution = Solution()
+Next = solution.getNext(size, needle)
+print("Final Next Array:", Next)
+
+
+
+
+
 28. 实现 strStr()
 
 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
