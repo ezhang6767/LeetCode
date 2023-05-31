@@ -106,10 +106,9 @@ def push(self, x: int) -> None:
 
     def peek(self) -> int:
         """Get the front element."""
-        if not self.stack_out:              #判断输出栈是否为空
-            while self.stack_in:            #如果输出栈为空，则将输入栈中的所有元素逐个取出并加入输出栈中：
-                self.stack_out.append(self.stack_in.pop())
-        return self.stack_out[-1]           #返回输出栈的栈顶元素(最后加入的)
+        ans = self.pop()                    #直接调用前面的pop函数
+        self.stack_out.append(ans)          #将pop出的数添加回去
+        return ans        
 
 
     def empty(self) -> bool:
@@ -135,10 +134,10 @@ class MyQueue:
         return self.stack_out.pop()
 
     def peek(self) -> int:
-        if not self.stack_out:
-            while self.stack_in:
+        if not self.stack_out:              #判断输出栈是否为空
+            while self.stack_in:            #如果输出栈为空，则将输入栈中的所有元素逐个取出并加入输出栈中：
                 self.stack_out.append(self.stack_in.pop())
-        return self.stack_out[-1]
+        return self.stack_out[-1]           #返回输出栈的栈顶元素(最后加入的)但是并不弹出
 
 
     def empty(self) -> bool:
@@ -206,5 +205,29 @@ class MyStack:
     def empty(self) -> bool:
 
         return len(self.queue_in) == 0          #只需要判断in是不是有数据
+        
+        
+#优化，使用一个队列实现        
+class MyStack:
 
+    def __init__(self):
+        self.que = deque()
+
+    def push(self, x: int) -> None:
+        self.que.append(x)
+
+    def pop(self) -> int:
+        if self.empty():
+            return None
+        for i in range(len(self.que)-1):
+            self.que.append(self.que.popleft())
+        return self.que.popleft()
+
+    def top(self) -> int:
+        if self.empty():
+            return None
+        return self.que[-1]
+
+    def empty(self) -> bool:
+        return not self.que
 
