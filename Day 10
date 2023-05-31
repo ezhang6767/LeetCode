@@ -77,15 +77,18 @@ empty() -- 返回队列是否为空。
 使用两个栈，一个作为输入栈，一个作为输出栈。push操作时将元素加入输入栈，pop/peek操作时判断输出栈是否为空，
 如果为空则将输入栈中的所有元素逐个取出并加入输出栈中，再进行操作。这样保证了输出栈中的元素顺序即为队列中的顺序。
 
+在push数据的时候，只要数据放进输入栈就好，但在pop的时候，操作就复杂一些，
+
+输出栈如果为空，就把进栈数据全部导入进来（注意是全部导入），再从出栈弹出数据，如果输出栈不为空，则直接从出栈弹出数据就可以了。
+
+#peek()的实现，直接复用了pop()的写法
 class MyQueue:
 
     def __init__(self):
         self.stack_in = []          #in for push
         self.stack_out = []         #out for pop
 
-
-
-    def push(self, x: int) -> None:
+def push(self, x: int) -> None:
         self.stack_in.append(x)
 
     def pop(self) -> int:
@@ -113,6 +116,33 @@ class MyQueue:
         return not (self.stack_in or self.stack_out)
 
 
+#仔细看pop和peak的区别
+
+class MyQueue:
+
+    def __init__(self):
+        self.stack_in = []
+        self.stack_out = []
+
+
+    def push(self, x: int) -> None:
+        self.stack_in.append(x)
+
+    def pop(self) -> int:
+        if not self.stack_out:
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out.pop()
+
+    def peek(self) -> int:
+        if not self.stack_out:
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]
+
+
+    def empty(self) -> bool:
+        return not self.stack_in and not self.stack_out
 
 # Your MyQueue object will be instantiated and called as such:
 # obj = MyQueue()
