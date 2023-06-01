@@ -1,1 +1,77 @@
+20. 有效的括号
+https://leetcode.cn/problems/valid-parentheses/
+
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+注意空字符串可被认为是有效字符串。
+
+解题分析：
+这里有三种不匹配的情况:
+1. 字符串里左方向的括号多余了
+2. 字符串里右方向的括号多余了，所以不匹配
+3. 括号没有多余，但是括号的类型没有匹配上
+
+#使用stack
+
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for item in s:
+            if item == '(':
+                stack.append(')')
+            
+            elif item == '[':
+                stack.append(']')
+
+            elif item == '{':
+                stack.append('}')
+
+            elif not stack or item != stack[-1]: #如果栈为空，说明没有左括号与当前右括号匹配
+                return False    #因此返回 False
+
+            else:
+                stack.pop()
+
+        return len(stack) == 0
+        #return not stack
+        #return True if not stack else False
+        
+#使用字典   
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        mapping = {
+            '(':')',
+            '[':']',
+            '{':'}'
+        }
+        for item in s:
+            if item in mapping.keys():        #也可以写成in mapping
+                stack.append(mapping[item])
+            
+            elif not stack or stack[-1] != item:
+                return False
+
+            else:
+                stack.pop()
+
+        return not stack
+#字典写法2
+def isValid(s: str) -> bool:
+    stack = []
+    mapping = {')': '(', ']': '[', '}': '{'}
+
+    for char in s:
+        if char in mapping:  # 右括号
+            if not stack or stack[-1] != mapping[char]:
+                return False
+            stack.pop()
+        else:  # 左括号
+            stack.append(char)
+
+    return len(stack) == 0
 
