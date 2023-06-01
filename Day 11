@@ -114,3 +114,82 @@ class Solution:
             fast += 1
             
         return ''.join(res[0: slow])
+
+150. 逆波兰表达式求值
+https://leetcode.cn/problems/evaluate-reverse-polish-notation/
+
+逆波兰表达式：是一种后缀表达式，所谓后缀就是指运算符写在后面。
+
+平常使用的算式则是一种中缀表达式，如 ( 1 + 2 ) * ( 3 + 4 ) 。
+
+该算式的逆波兰表达式写法为 ( ( 1 2 + ) ( 3 4 + ) * ) 。
+
+逆波兰表达式主要有以下两个优点：
+
+去掉括号后表达式无歧义，上式即便写成 1 2 + 3 4 + * 也可以依据次序计算出正确结果。
+
+适合用栈操作运算：遇到数字则入栈；遇到运算符则取出栈顶两个数字进行计算，并将结果压入栈中。
+
+#常规解法
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        operators = set(['+','-','*','/'])
+
+        for token in tokens:
+            if token not in operators:
+                stack.append(int(token))    #result不是int所以要转化为int
+            
+            else:
+                num2 = stack.pop()
+                num1 = stack.pop()
+
+                if token == '+':
+                    result = num1 + num2
+
+                elif token == '-':
+                    result = num1 - num2
+
+                elif token == '*':
+                    result = num1 * num2
+
+                else:
+                    result = int(num1 / num2) #两个整数之间的除法总是 向零截断 所以不能用整除运算符//
+
+                stack.append(result)
+
+        return stack[0]                 #如果直接return stack会有[]
+        
+#使用eval解法
+stack = []
+
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        for item in tokens:
+            if item not in {'+','-','*','/'}:
+                stack.append(item)
+            
+            else:
+                num2, num1 = stack.pop(), stack.pop() # 第一个出来的是num2
+                stack.append(int(eval(f'{num1}{item}{num2}'))) #需要转化成int以满足题目要求
+        
+        return int(stack.pop()) # 如果一开始只有一个数，那么会是字符串形式的
+
+
+这个解法使用了栈来求解逆波兰表达式，其中每个元素都是字符串类型的。以下是对该解法的详细解释：
+
+创建一个空栈 stack，用于存储操作数或中间结果。
+对于逆波兰表达式中的每个元素 item：
+如果 item 不是运算符（即不是 "+", "-", "*", "/"），则将其视为操作数，并将其压入栈 stack 中。
+如果 item 是运算符，则从栈 stack 中弹出两个操作数 first_num 和 second_num。注意，在逆波兰表达式中，第一个弹出的操作数是第二个操作数运算时位于运算符后面的那个操作数。
+使用 eval() 函数计算出 second_num、item 和 first_num 的表达式的值，并将结果转换为整数类型。这里使用了 eval() 函数来动态地计算表达式的值。
+将计算结果压入栈 stack 中，作为中间结果。
+循环结束后，栈 stack 中最后剩下的元素即为最终的计算结果。将其弹出，并将结果转换为整数类型后返回。
+需要注意的是，由于题目描述中指出表达式总是可以求值并且没有除数为0的情况，因此在此解法中没有对这些特殊情况进行处理。
+
+此外，如果一开始只有一个数，那么在运算结束后，栈 stack 中仍然会保留该数，但以字符串形式存在。为了确保返回整数类型的结果，将栈顶元素使用 int() 函数转换为整数后返回。
+
+这种解法利用了 Python 的动态特性，使用 eval() 函数直接计算表达式的值，简化了运算符的处理过程。但需要注意，在实际应用中，eval() 函数的使用可能会带来一些安全风险，因为它允许执行任意的表达式。因此，在面对不可信的输入时，需要谨慎使用 eval() 函数。
+        
+        
