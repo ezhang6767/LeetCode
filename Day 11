@@ -75,3 +75,42 @@ def isValid(s: str) -> bool:
 
     return len(stack) == 0
 
+1047. 删除字符串中的所有相邻重复项
+https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/
+
+
+解题思路：
+使用栈来解决这个问题。遍历字符串 s，对于每个字符，如果栈为空或栈顶元素与当前字符不相同，将当前字符压入栈中；
+如果栈顶元素与当前字符相同，说明出现了重复项，将栈顶元素弹出。最后，将栈中的元素依次弹出并拼接成最终的字符串结果。
+# 方法一，使用栈
+def removeDuplicates(s: str) -> str:
+    stack = []
+    
+    for char in s:
+        if stack and stack[-1] == char:
+            stack.pop()
+        else:
+            stack.append(char)
+
+    return ''.join(stack)
+
+
+# 方法二，使用双指针模拟栈，如果不让用栈可以作为备选方法。
+class Solution:
+    def removeDuplicates(self, s: str) -> str:
+        res = list(s)
+        slow = fast = 0
+        length = len(res)
+
+        while fast < length:
+            # 如果一样直接换，不一样会把后面的填在slow的位置
+            res[slow] = res[fast]
+            
+            # 如果发现和前一个一样，就退一格指针
+            if slow > 0 and res[slow] == res[slow - 1]:
+                slow -= 1
+            else:
+                slow += 1
+            fast += 1
+            
+        return ''.join(res[0: slow])
