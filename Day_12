@@ -1,0 +1,163 @@
+239. 滑动窗口最大值
+https://leetcode.cn/problems/sliding-window-maximum/
+给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+
+返回滑动窗口中的最大值。
+
+进阶：
+
+你能在线性时间复杂度内解决此题吗？
+
+
+1.创建一个空的双端队列 deque，用于存储元素的索引。
+2.遍历数组 nums，对于每个元素 nums[i]：
+    a.在队列 deque 中，保持窗口中的元素索引按照从大到小的顺序排列。如果队列的尾部元素对应的数组中的元素小于等于当前元素 nums[i]，则将尾部元素弹出，直到队列为空或队列尾部元素大于当前元素。
+    b.将当前元素的索引 i 加入队列 deque 的尾部。
+    如果队列 deque 的首部元素所对应的索引不在当前窗口中（即 i - k 大于队列首部元素的索引），则将首部元素弹出。
+    c.如果当前索引 i 大于等于窗口大小 k - 1，则将队列 deque 的首部元素所对应的数组中的元素加入结果列表 result 中。
+3.返回结果列表 result。
+
+在解法中，将当前元素的索引 i 加入队列 deque 的尾部而不是直接添加当前元素，是因为我们需要在队列中维护窗口内元素的索引信息。
+
+使用索引的好处是我们可以轻松地判断队列中的元素是否在当前窗口内。具体来说，我们可以通过比较队列中的首部元素的索引和当前元素的索引的差值，来确定队列中的元素是否在窗口内。如果索引差值大于等于窗口大小 k，则意味着队列中的首部元素已经不在当前窗口内，需要将其弹出。
+
+另外，由于题目要求返回每个窗口中的最大值，我们只需要存储索引而不需要存储具体的元素值。在需要计算窗口中的最大值时，我们可以根据索引直接访问到对应的元素值。
+
+因此，将当前元素的索引加入队列的尾部是为了方便维护窗口内元素的索引信息，以及在需要时计算窗口中的最大值。
+
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        result = []
+        deque = collections.deque()
+
+        for i in range(len(nums)):
+        # 维护队列中的元素索引按照从大到小的顺序排列            
+            while deque and nums[deque[-1]] <= nums[i]:
+                deque.pop()
+            
+            deque.append(i)
+        # 弹出窗口外的元素
+            if deque[0] <= i-k:
+                deque.popleft()
+        # 当i处于滑动窗口右端时，将窗口内的最大值加入结果列表
+            if i >= k - 1:
+                result.append(nums[deque[0]])
+        
+        return result
+
+
+#解法二
+from collections import deque
+
+class MyQueue: #单调队列（从大到小
+    def __init__(self):
+        self.queue = deque() #这里需要使用deque实现单调队列，直接使用list会超时
+    
+    #每次弹出的时候，比较当前要弹出的数值是否等于队列出口元素的数值，如果相等则弹出。
+    #同时pop之前判断队列当前是否为空。
+    def pop(self, value):
+        if self.queue and value == self.queue[0]:
+            self.queue.popleft()#list.pop()时间复杂度为O(n),这里需要使用collections.deque()
+            
+    #如果push的数值大于入口元素的数值，那么就将队列后端的数值弹出，直到push的数值小于等于队列入口元素的数值为止。
+    #这样就保持了队列里的数值是单调从大到小的了。
+    def push(self, value):
+        while self.queue and value > self.queue[-1]:
+            self.queue.pop()
+        self.queue.append(value)
+        
+    #查询当前队列里的最大值 直接返回队列前端也就是front就可以了。
+    def front(self):
+        return self.queue[0]
+    
+class Solution:
+    def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
+        que = MyQueue()
+        result = []
+        for i in range(k): #先将前k的元素放进队列
+            que.push(nums[i])
+        result.append(que.front()) #result 记录前k的元素的最大值
+        for i in range(k, len(nums)):
+            que.pop(nums[i - k]) #滑动窗口移除最前面元素
+            que.push(nums[i]) #滑动窗口前加入最后面的元素
+            result.append(que.front()) #记录对应的最大值
+        return result
+        
+        
+        
+        
+#解法一
+import heapq
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #统计元素出现频率
+        map_ = {}
+        for i in range(len(nums)):
+            map_[nums[i]] = map_.get(nums[i],0) + 1 
+        #map_.get(nums[i], 0) 的意思是获取字典 map_ 中键 nums[i] 对应的值，如果键不存在，则返回默认值 0。通过使用 get() 方法，我们可以在获取字典中的值时避免抛出 KeyError 异常，而是提供一个默认值作为备选。这样可以更安全地处理字典中的键不存在的情况。
+        #对频率排序
+        #定义一个小顶堆，大小为k
+        pri_que = [] #小顶堆
+
+        #map_.items(): 这是字典的方法调用，返回一个包含字典中所有键值对的可迭代对象。
+        
+        for key, freq in map_.items():          #对key和freq同时迭代
+            heapq.heappush(pri_que,(freq,key))
+        #heappush() 函数将一个元组 (freq, key) 插入到名为 pri_que 的堆中。    
+            if len(pri_que) > k: #如果堆的大小大于了K，则队列弹出，保证堆的大小一直为k
+                heapq.heappop(pri_que)
+        
+        result = [0] * k
+        
+        for i in range(k-1, -1, -1):
+            result[i] = heapq.heappop(pri_que)[1]           #找出前K个高频元素，因为小顶堆先弹出的是最小的，所以倒序来输出到数组
+        return result
+
+
+#解法二
+from typing import List
+import heapq
+from collections import Counter
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        counter = Counter(nums)
+        heap = []
+        
+        # 使用小顶堆，按照频次排序
+        for num, count in counter.items():
+            heapq.heappush(heap, (count, num))
+            if len(heap) > k:
+                heapq.heappop(heap)
+        
+        # 反转结果列表的顺序，使频次从大到小
+        result = [item[1] for item in reversed(heap)]
+        
+        return result
+#from typing import List: 这行代码引入了类型提示的模块，其中的 List 表示 Python 中的列表类型。使用类型提示可以在代码中明确指定函数参数和返回值的类型，提供代码的可读性和可维护性。
+#import heapq: 这行代码导入了 Python 的 heapq 模块，它提供了对堆数据结构的支持。堆是一种特殊的二叉树结构，可以用来实现优先队列等功能。heapq 模块提供了一些函数来操作堆，例如 heappush、heappop 等，用于向堆中添加元素和弹出堆顶元素。
+#from collections import Counter: 这行代码从 collections 模块中导入了 Counter 类。Counter 是一个简单的计数器工具，用于统计可迭代对象中各元素的出现次数。它返回一个字典，其中键是元素，值是对应元素的频次。在本题中，使用 Counter 可以方便地统计数组中各元素的频次。
+
+
+Q: 为什么heap内的元素顺序，会随着heappop的依次弹出而产生变化?
+A:
+heapq.heappop(heap) 函数会从堆中弹出并返回具有最小值的元素，并且会重新调整堆的顺序，以确保堆的性质得到维持。
+
+堆是一种特殊的数据结构，具有以下性质：
+
+对于堆中的任意节点 i，其父节点的值小于等于其自身的值。
+堆中的元素按照特定的顺序排列，通常是以完全二叉树的形式进行组织。
+在堆中，最小元素位于堆的根部（即索引为 0 的位置），而弹出最小元素后，为了保持堆的性质，需要将下一个最小的元素移到根部，并调整堆的顺序。
+
+具体来说，heapq.heappop(heap) 的操作步骤如下：
+
+返回堆中的根部元素（最小元素）。
+将堆的最后一个元素移动到根部位置。
+通过逐级下降（down-heap）的方式，将根部元素与其子节点进行比较和交换，直到堆的性质得到恢复。
+由于每次弹出操作都会重新调整堆的顺序，所以随着不断执行 heappop() 操作，堆内的元素顺序会发生变化。最终，堆会按照堆的性质重新排序，以确保根部仍然是最小元素。
+
+需要注意的是，虽然堆的顺序发生变化，但堆的性质仍然被维持，即根部始终是最小元素。
+
+
+
+        
