@@ -1,0 +1,137 @@
+144.二叉树的前序遍历
+https://leetcode.cn/problems/binary-tree-preorder-traversal/
+
+#类方法：将前序遍历的逻辑放在了一个类方法 preorderTraversal 中。方法接收根节点作为参数，并通过递归调用实现了前序遍历。
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        middle = root.val   # 显式列出中节点的遍历
+        left = self.preorderTraversal(root.left)
+        right = self.preorderTraversal(root.right)
+
+        return [middle] + left +right
+       # return [root.val] + left +right  #非显示中节点遍历
+       
+#嵌套函数法：将前序遍历的逻辑放在了一个嵌套函数 traversal 中。嵌套函数接收根节点作为参数，
+#并通过递归调用实现了前序遍历。然后，在外部定义的 preorderTraversal 方法中调用了嵌套函数来执行遍历，并返回结果。
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+
+        def traversal(root: TreeNode):
+            if root == None:
+                return
+            
+            result.append(root.val)
+            traversal(root.left)
+            traversal(root.right)
+        
+        traversal(root)
+        return result
+
+#从代码结构上看，第一种写法更加简洁，将前序遍历的逻辑直接封装在类方法中。而第二种写法使用了嵌套函数，将遍历逻辑封装在嵌套函数中，然后在外部定义的方法中调用嵌套函数。
+        
+
+145.二叉树的后序遍历
+https://leetcode.cn/problems/binary-tree-postorder-traversal/
+
+#类方法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        #result = []
+        left = self.postorderTraversal(root.left)
+        right = self.postorderTraversal(root.right)
+        #middle = root.val                #也可以显示中节点遍历
+
+        return left + right + [root.val]
+        
+#嵌套函数法        
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+        def traversal(root: TreeNode):
+            if not root:
+                return
+
+            traversal(root.left)    # 递归遍历左子树
+            traversal(root.right)   # 递归遍历右子树
+            result.append(root.val)  # 将当前节点的值添加到结果列表
+
+        traversal(root)  # 调用嵌套函数进行后序遍历
+        return result    # 返回遍历结果列表
+
+详细分析：
+
+这段代码实现了二叉树的后序遍历。下面对代码的执行过程进行分析：
+
+首先，在外部定义的 postorderTraversal 方法中创建一个空的列表 result，用于存储遍历结果。
+
+然后，定义了一个嵌套函数 traversal，用于递归遍历二叉树的节点。
+
+traversal 函数接收一个参数 root，表示当前要遍历的二叉树的根节点。
+
+如果根节点为空，即二叉树为空，直接返回。
+
+如果根节点不为空，则先递归调用 traversal 函数遍历左子树，再递归调用 traversal 函数遍历右子树。
+
+最后，将当前节点的值 root.val 添加到结果列表 result 中。这是后序遍历的特点，先遍历左子树，再遍历右子树，最后访问根节点。
+
+在 postorderTraversal 方法中调用 traversal 函数，并传入根节点 root，开始执行后序遍历。
+
+最后，返回遍历结果列表 result。
+
+总结起来，这段代码通过使用嵌套函数 traversal 实现了二叉树的后序遍历。在遍历过程中，先递归遍历左子树，再递归遍历右子树，
+
+最后将根节点的值添加到结果列表中。这样就实现了后序遍历的顺序：左子树 -> 右子树 -> 根节点。        
+
+94.二叉树的中序遍历
+https://leetcode.cn/problems/binary-tree-inorder-traversal/
+
+#类方法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+
+        left = self.inorderTraversal(root.left)
+        middle = root.val
+        right = self.inorderTraversal(root.right)
+
+        return left + [middle] + right
+        
+#嵌套函数法
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+        def traversal(root: TreeNode):
+            if not root:
+                return []
+            traversal(root.left)
+            result.append(root.val)
+            traversal(root.right)
+
+        traversal(root)
+        return result
+                    
+        
