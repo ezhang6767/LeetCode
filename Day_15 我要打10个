@@ -1,0 +1,117 @@
+
+
+102. 二叉树的层序遍历
+https://leetcode.cn/problems/binary-tree-level-order-traversal/
+
+# 利用长度法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []  # 根节点为空则返回空列表
+
+        queue = collections.deque([root])  # 使用双端队列来实现层次遍历
+        result = []  # 存储层次遍历的结果列表
+
+        while queue:
+            level = []  # 用于存储当前层的节点值
+            for _ in range(len(queue)):
+                cur = queue.popleft()  # 从队列左侧弹出一个节点
+
+                level.append(cur.val)  # 将当前节点的值添加到当前层的列表中
+
+                if cur.left:
+                    queue.append(cur.left)  # 将左子节点入队列
+                if cur.right:
+                    queue.append(cur.right)  # 将右子节点入队列
+
+            result.append(level)  # 将当前层的列表添加到结果列表中
+
+        return result  # 返回层次遍历的结果列表
+
+在这个解法中，我们使用了队列来实现二叉树的层次遍历。
+
+首先，我们判断根节点root是否为空，如果为空，则直接返回一个空列表，因为没有节点可遍历。
+
+然后，我们初始化一个双端队列queue，并将根节点root作为初始值放入队列中。
+
+我们还定义了一个空列表result，用于存储层次遍历的结果。
+
+接下来，我们进入一个循环，只要队列queue不为空，就一直进行迭代。
+
+
+# 递归法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        levels = []  # 存储每层节点值的列表
+        self.helper(root, 0, levels)  # 调用递归辅助函数进行层次遍历
+        return levels  # 返回层次遍历的结果
+    
+    def helper(self, node, level, levels):
+        if not node:
+            return  # 如果当前节点为空，直接返回
+
+        if len(levels) == level:
+            levels.append([])  # 如果levels的长度等于当前层级level，说明还没有创建该层的列表，因此在levels中添加一个空列表
+
+        levels[level].append(node.val)  # 将当前节点的值添加到对应层级的列表中
+
+        self.helper(node.left, level + 1, levels)  # 递归遍历左子树，层级level加1
+        self.helper(node.right, level + 1, levels)  # 递归遍历右子树，层级level加1
+
+
+在每次迭代中，我们首先创建一个空列表level，用于存储当前层的节点值。
+
+然后，我们使用range(len(queue))来迭代处理当前层的节点。通过这样的处理方式，我们可以确保每次只处理当前层的节点，不会将下一层的节点加入到当前层的列表中。
+
+在迭代处理当前层的节点时，我们从队列的左侧弹出一个节点cur，将其值cur.val添加到当前层的列表level中。
+
+接着，我们判断当前节点cur的左子节点和右子节点是否存在，如果存在，则将它们依次加入队列queue中，以便在下一次迭代中处理。
+
+重复以上步骤，直到队列为空，即遍历完整个二叉树。
+
+最后，我们将每层的列表level添加到结果列表result中。
+
+返回结果列表result，其中存储了二叉树的层次遍历结果。
+
+
+
+429.N叉树的层序遍历
+
+# Definition for a Node.
+# class Node:
+#     def __init__(self, val=None, children=None):
+#         self.val = val
+#         self.children = children
+
+class Solution:
+    def levelOrder(self, root: 'Node') -> List[List[int]]:
+        if not root:
+            return []
+
+        levels = []  # 存储每层节点值的列表
+        self.helper(root, 0, levels)  # 调用递归辅助函数进行层次遍历
+        return levels  # 返回层次遍历的结果
+    
+    def helper(self, node, level, levels):
+        if not node:
+            return  # 如果当前节点为空，直接返回
+
+        if len(levels) == level:
+            levels.append([])  # 如果levels的长度等于当前层级level，说明还没有创建该层的列表，因此在levels中添加一个空列表
+
+        levels[level].append(node.val)  # 将当前节点的值添加到对应层级的列表中
+
+        for child in node.children:
+            self.helper(child, level + 1, levels)  # 递归遍历当前节点的每个子节点，层级level加1
