@@ -115,3 +115,145 @@ class Solution:
 
         for child in node.children:
             self.helper(child, level + 1, levels)  # 递归遍历当前节点的每个子节点，层级level加1
+            
+            
+
+226.翻转二叉树            
+https://leetcode.cn/problems/invert-binary-tree/
+
+前序和后序遍历只需要左右孩子调换即可。
+root.left, root.right = root.right, root.left
+            
+101. 对称二叉树
+https://leetcode.cn/problems/symmetric-tree/
+
+#递归法：前序遍历：
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        return self.compare(root.left, root.right)
+        
+    def compare(self, left, right):
+        # 首先排除空节点的情况
+        if left == None and right != None: return False
+        elif left != None and right == None: return False
+        elif left == None and right == None: return True
+        # 排除了空节点，再排除数值不相同的情况
+        elif left.val != right.val: return False
+        
+        # 此时就是：左右节点都不为空，且数值相同的情况
+        # 此时才做递归，做下一层的判断
+        outside = self.compare(left.left, right.right) # 左子树：左、 右子树：右
+        inside = self.compare(left.right, right.left) # 左子树：右、 右子树：左
+        isSame = outside and inside # 左子树：中、 右子树：中 （逻辑处理）
+        return isSame
+
+在迭代法中我们使用了队列，需要注意的是这不是层序遍历，
+而且仅仅通过一个容器来成对的存放我们要比较的元素，知道这一本质之后就发现，用队列，用栈，甚至用数组，都是可以的。
+
+#迭代法： 使用队列
+import collections
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        queue = collections.deque()
+        queue.append(root.left) # 将左子树头结点加入队列
+        queue.append(root.right) # 将右子树头结点加入队列
+        while queue: # 接下来就要判断这这两个树是否相互翻转
+            leftNode = queue.popleft()
+            rightNode = queue.popleft()
+            if not leftNode and not rightNode: # 左节点为空、右节点为空，此时说明是对称的
+                continue
+            
+            # 左右一个节点不为空，或者都不为空但数值不相同，返回False
+            if not leftNode or not rightNode or leftNode.val != rightNode.val:
+                return False
+            queue.append(leftNode.left) # 加入左节点左孩子
+            queue.append(rightNode.right) # 加入右节点右孩子
+            queue.append(leftNode.right) # 加入左节点右孩子
+            queue.append(rightNode.left) # 加入右节点左孩子
+        return True
+        
+        
+#迭代法： 使用栈
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return True
+        
+        stack = []
+        stack.append(root.left)  # 将根节点的左子节点压入栈
+        stack.append(root.right)  # 将根节点的右子节点压入栈
+        while stack:
+            rightNode = stack.pop()  # 弹出栈顶节点作为右节点
+            leftNode = stack.pop()  # 弹出栈顶节点作为左节点
+
+            if not rightNode and not leftNode:  # 左右节点都为空，继续下一轮循环
+                continue
+
+            if not leftNode or not rightNode or leftNode.val != rightNode.val:
+                # 左右节点有一个为空，或者它们的值不相等，返回False
+                return False
+
+            stack.append(leftNode.left)  # 压入左节点的左孩子
+            stack.append(rightNode.right)  # 压入右节点的右孩子
+            stack.append(leftNode.right)  # 压入左节点的右孩子
+            stack.append(rightNode.left)  # 压入右节点的左孩子
+        return True
+
+#层次遍历
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        
+        queue = collections.deque([root.left, root.right])  # 将根节点的左右子节点加入队列
+        
+        while queue:
+            level_size = len(queue)  # 当前层的节点数量
+            
+            if level_size % 2 != 0:  # 如果当前层节点数量为奇数，说明不对称
+                return False
+            
+            level_vals = []  # 存储当前层节点的值
+            
+            for i in range(level_size):
+                node = queue.popleft()  # 弹出队首节点
+                
+                if node:
+                    level_vals.append(node.val)  # 将节点的值加入level_vals列表
+                    queue.append(node.left)  # 将节点的左子节点加入队列
+                    queue.append(node.right)  # 将节点的右子节点加入队列
+                else:
+                    level_vals.append(None)  # 如果节点为空，用None表示
+                    
+            if level_vals != level_vals[::-1]:  # 判断level_vals列表是否对称
+                return False
+            
+        return True
+
+
+以上解法的优缺点如下：
+
+递归解法：
+
+优点：简洁易理解，代码量较少。
+缺点：由于递归调用，可能导致函数调用栈溢出，适用于二叉树规模较小的情况。
+
+迭代解法（层序遍历）：
+
+优点：不需要使用递归，使用队列进行层序遍历，适用于二叉树规模较大的情况。
+缺点：需要使用辅助队列，空间复杂度较高。
+
+迭代解法（使用栈）：
+
+优点：不需要使用递归，使用栈进行前序遍历，适用于二叉树规模较大的情况。
+缺点：需要使用辅助栈，空间复杂度较高。
+
+对于"对称二叉树"这个问题，递归解法和迭代解法（层序遍历）都是常见且有效的解法。
+选择哪种解法最好，取决于具体的问题情况和个人偏好。
+如果二叉树规模较小，递归解法简洁易懂；
+如果二叉树规模较大，迭代解法（层序遍历）更适合，可以避免函数调用栈溢出的问题。
+因此，没有绝对的最佳解法，选择适合问题的解法更为重要。
