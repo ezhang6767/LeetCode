@@ -1,0 +1,183 @@
+第六章  二叉树part03
+
+104.二叉树的最大深度 （优先掌握递归）
+
+https://leetcode.cn/problems/maximum-depth-of-binary-tree/
+#递归法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        return self.getDepth(root)
+    
+    def getDepth(self, node):
+        if not node:
+            return 0
+        #其实是处理高度
+        leftHeight = self.getDepth(node.left)       #左
+        rightHeight = self.getDepth(node.right)     #右
+        height = 1 + max(leftHeight, rightHeight)   #中 处理深度逻辑
+        return height
+        
+
+559.n叉树的最大深度 
+
+https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/
+
+class Solution:
+    def maxDepth(self, root: 'Node') -> int:
+        return self.getdepth(root)
+        
+    def getdepth(self, node):
+        if not node:
+            return 0
+        max_depth = 1
+        for child in node.children:
+            max_depth = max(max_depth,self.getdepth(child)+1)
+        return max_depth
+        
+        
+        
+111.二叉树的最小深度
+https://leetcode.cn/problems/minimum-depth-of-binary-tree/description/
+
+
+class Solution:
+    def minDepth(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        
+        # 如果当前节点是叶子节点，返回深度 1
+        if not root.left and not root.right:
+            return 1
+
+        # 初始化最小深度为无穷大
+        depth = float('inf')
+
+        # 如果存在左子树，递归计算左子树的最小深度
+        if root.left:
+            depth = min(depth, self.minDepth(root.left))
+
+        # 如果存在右子树，递归计算右子树的最小深度
+        if root.right:
+            depth = min(depth, self.minDepth(root.right))
+
+        # 返回左右子树最小深度加上根节点的深度
+        return depth + 1
+        
+该解法的时间复杂度是O(N)，其中N是二叉树的节点数，因为每个节点都需要被访问一次。
+空间复杂度是O(H)，其中H是二叉树的高度，即递归调用栈的最大深度。  
+
+class Solution:
+    def getDepth(self, node):
+        if not node:
+            return 0
+        # 在递归过程中获取当前节点的左子树和右子树的深度。    
+        leftDepth = self.getDepth(node.left)
+        rightDepth = self.getDepth(node.right)
+
+        # 如果当前节点只有右子树，返回右子树的深度加1
+        if not node.left and node.right:
+            return 1 + rightDepth
+
+        # 如果当前节点只有左子树，返回左子树的深度加1
+        if not node.right and node.left:
+            return 1 + leftDepth
+
+        # 返回左右子树深度的较小值加上当前节点的深度1
+        result = 1 + min(leftDepth, rightDepth)
+        return result
+
+
+    def minDepth(self, root: Optional[TreeNode]) -> int:
+        return self.getDepth(root)
+        
+        
+"""
+在这种解法中，我们没有直接使用一个初始的最小深度值为无穷大。这是因为在递归过程中，我们会根据当前节点的情况来更新最小深度。
+
+在getDepth函数中，我们通过递归计算左子树和右子树的深度，然后根据当前节点的情况来返回最小深度。
+
+如果当前节点只有右子树而没有左子树，我们返回右子树的深度加1；如果当前节点只有左子树而没有右子树，我们返回左子树的深度加1；否则，我们返回左右子树深度的较小值加上当前节点的深度1。
+
+通过这种递归计算的方式，我们可以保证在递归过程中正确地更新最小深度，而不需要显式地设置一个初始的最小深度为无穷大。
+
+这样可以简化代码逻辑，并且不会影响最终的结果。
+
+需要注意的是，如果根节点为空，即整个树为空树，那么根据题目要求，最小深度应为0，因此在minDepth函数中的初始判断条件是if not root:而不是使用初始的最小深度为无穷大。
+"""
+
+222.完全二叉树的节点个数
+
+https://leetcode.cn/problems/count-complete-tree-nodes/
+
+#按照普通二叉树来迭代
+class Solution:
+    def countNodes(self, root: Optional[TreeNode]) -> int:
+        return self.getNodesNum(root) #在主函数 countNodes 中调用 getNodesNum 函数，并将根节点作为参数传入。
+    
+    def getNodesNum(self,cur):
+        if not cur:  #首先进行终止条件判断。如果当前节点为空，说明到达了叶子节点的子节点（null），返回节点个数为0。
+            return 0
+
+        leftNum = self.getNodesNum(cur.left)   #递归计算当前节点的左子树和右子树的节点个数
+        rightNum = self.getNodesNum(cur.right) #分别调用 getNodes(node.left) 和 getNodes(node.right)。
+        treeNum = leftNum + rightNum + 1       #左右子树相加，再加上当前节点本身
+        return treeNum
+"""
+整个递归过程会不断地向下递归到叶子节点，并且每次递归会计算左子树和右子树的节点个数，
+
+然后将它们相加得到当前子树的节点个数。最终，递归回到根节点时，就得到了二叉树的节点个数。
+
+注意：这种解法的时间复杂度为 O(N)，其中 N 是二叉树的节点个数。
+
+因为对于每个节点，都需要递归计算其左子树和右子树的节点个数。
+"""
+
+#按照完全二叉树来迭代
+
+class Solution:
+    def countNodes(self, root: Optional[TreeNode]) -> int:
+        if not root:
+            return 0
+        # 为了判断完全二叉树
+        left = root.left
+        right = root.right
+
+        leftDepth = 0
+        rightDepth = 0
+
+        # 计算左子树的深度
+        while left:
+            left = left.left
+            leftDepth += 1
+
+        # 计算右子树的深度
+        while right:
+            right = right.right
+            rightDepth += 1
+
+        if leftDepth == rightDepth:
+            # 完美二叉树的节点数量公式：(2 << leftDepth) - 1
+            return (2 << leftDepth) - 1
+        
+        # 不是完美二叉树，递归计算左子树和右子树的节点数量
+        return self.countNodes(root.left) + self.countNodes(root.right) + 1
+
+
+
+"""
+如果将 (2 << leftDepth) - 1 改为 2 ** leftDepth，提交结果出现错误，可能是因为在计算 (2 << leftDepth) - 1 时，使用了位运算符 <<，而位运算符比乘方运算符 ** 的效率更高。
+
+位运算符 << 是按位左移运算符，将一个数的二进制表示向左移动指定的位数，相当于将该数乘以 2 的指定次幂。因此，(2 << leftDepth) - 1 表示将 2 左移 leftDepth 位，再减去 1，得到的结果就是一个二进制数，其位数与左移的次数相等，可以直接表示完全二叉树的节点数量。
+
+而乘方运算符 ** 则进行了幂运算，计算的结果是一个浮点数，可能存在精度问题。在节点数量较大的情况下，浮点数的表示可能会导致精度损失，从而得到错误的结果。
+
+综上所述，使用 (2 << leftDepth) - 1 更适合用于计算完全二叉树的节点数量，以确保精确性和效率。
+"""
+
+        
