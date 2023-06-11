@@ -59,3 +59,31 @@ if left_height := self.get_height(root.left) == -1:：
 因此，这两种写法的区别在于赋值操作和比较操作的先后顺序。
 第一种写法先进行赋值，再进行比较；
 第二种写法先进行比较，再进行赋值。这可能会导致不同的结果。
+
+
+257. 二叉树的所有路径
+
+https://leetcode.cn/problems/binary-tree-paths/
+
+递归法+回溯
+class Solution:
+    def traversal(self, cur, path, result):
+        path.append(cur.val)  # 将当前节点的值添加到路径中（中）
+        if not cur.left and not cur.right:  # 到达叶子节点
+            sPath = '->'.join(map(str, path))  # 将路径中的节点值转换为字符串，并用 '->' 连接起来
+            result.append(sPath)  # 将完整的路径添加到结果列表中
+            return
+        if cur.left:  # 处理左子节点（左）
+            self.traversal(cur.left, path, result)  # 递归调用，传入左子节点和当前路径
+            path.pop()  # 回溯，移除已经处理完的左子节点
+        if cur.right:  # 处理右子节点（右）
+            self.traversal(cur.right, path, result)  # 递归调用，传入右子节点和当前路径
+            path.pop()  # 回溯，移除已经处理完的右子节点
+
+    def binaryTreePaths(self, root):
+        result = []  # 存储最终结果的列表
+        path = []  # 当前路径的列表
+        if not root:
+            return result
+        self.traversal(root, path, result)  # 从根节点开始进行递归遍历
+        return result  # 返回结果列表
