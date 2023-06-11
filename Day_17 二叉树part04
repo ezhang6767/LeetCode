@@ -1,0 +1,61 @@
+110.平衡二叉树 （优先掌握递归）
+https://leetcode.cn/problems/balanced-binary-tree/
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if self.get_height(root) != -1:
+            return True
+        else:
+            return False
+
+    def get_height(self, root: TreeNode) -> int:
+        # Base Case
+        if not root:
+            return 0
+        # 左
+        if (left_height := self.get_height(root.left)) == -1:
+            return -1
+        # 右
+        if (right_height := self.get_height(root.right)) == -1:
+            return -1
+        # 中
+        if abs(left_height - right_height) > 1:
+            return -1
+        else:
+            return 1 + max(left_height, right_height)
+
+
+海象操作符 := walrus operator
+
+相当于：
+        left_height = self.get_height(root.left)
+        if left_height == -1:
+           return -1
+
+使用细节：
+
+在这两个条件语句中，使用了不同的括号位置，从而导致了不同的结果。
+
+if (left_height := self.get_height(root.left)) == -1:：
+
+在这个条件语句中，使用了括号将赋值表达式 (left_height := self.get_height(root.left)) 括起来。
+这意味着先执行赋值操作 (left_height := self.get_height(root.left))，将 self.get_height(root.left) 的结果赋值给 left_height。
+然后，比较 left_height 和 -1 的值是否相等。
+如果相等，执行相应的操作。
+
+if left_height := self.get_height(root.left) == -1:：
+
+在这个条件语句中，没有使用括号。
+根据Python的运算符优先级，比较操作符 == 的优先级高于赋值操作符 :=。
+因此，先执行比较操作 self.get_height(root.left) == -1，得到一个布尔值。
+然后，将这个布尔值赋值给 left_height。
+最后，根据 left_height 的值执行相应的操作。
+因此，这两种写法的区别在于赋值操作和比较操作的先后顺序。
+第一种写法先进行赋值，再进行比较；
+第二种写法先进行比较，再进行赋值。这可能会导致不同的结果。
