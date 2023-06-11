@@ -87,3 +87,57 @@ class Solution:
             return result
         self.traversal(root, path, result)  # 从根节点开始进行递归遍历
         return result  # 返回结果列表
+
+#隐形回溯：
+https://programmercarl.com/0257.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%89%80%E6%9C%89%E8%B7%AF%E5%BE%84.html#python
+
+
+404.左叶子之和
+https://leetcode.cn/problems/sum-of-left-leaves/
+
+class Solution:
+    def sumOfLeftLeaves(self, root):
+        if root is None:
+            return 0
+        
+        # 当前节点是叶子节点的情况
+        if root.left is None and root.right is None:
+            return 0
+        
+        # 递归处理左子树
+        leftValue = self.sumOfLeftLeaves(root.left)  # 左
+
+        # 判断左子树是否是左叶子节点
+        if root.left and not root.left.left and not root.left.right:
+            leftValue = root.left.val
+            
+        # 递归处理右子树
+        rightValue = self.sumOfLeftLeaves(root.right)  # 右
+
+        # 当前节点的值与左右子树的和相加
+        sum_val = leftValue + rightValue  # 中
+        
+        return sum_val
+
+首先，进行了三个条件判断：
+
+if root is None:：如果根节点为空，返回 0，表示没有左叶子节点。
+
+if root.left is None and root.right is None:：如果根节点没有左子树和右子树，返回 0，表示没有左叶子节点。
+
+然后，进行递归处理左子树和右子树。
+
+leftValue = self.sumOfLeftLeaves(root.left)：递归调用 sumOfLeftLeaves 函数处理左子树，得到左子树中左叶子节点的和（左子树的递归结果）。
+
+rightValue = self.sumOfLeftLeaves(root.right)：递归调用 sumOfLeftLeaves 函数处理右子树，得到右子树中左叶子节点的和（右子树的递归结果）。
+
+接下来，判断当前节点的左子树是否是左叶子节点：
+
+if root.left and not root.left.left and not root.left.right:：如果当前节点有左子树，并且左子树没有左子树和右子树，即左子树是左叶子节点。
+
+leftValue = root.left.val：将当前节点的左子树的值赋给 leftValue，表示左子树是左叶子节点。
+最后，将左子树的和 leftValue、右子树的和 rightValue，以及当前节点的值相加，得到左叶子节点的总和 sum_val。
+
+最后，返回左叶子节点的总和 sum_val。
+
+这种解法通过递归遍历二叉树的每个节点，判断节点是否是左叶子节点，并累加左叶子节点的值，从而得到左叶子节点的总和。
