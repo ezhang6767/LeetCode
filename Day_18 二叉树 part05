@@ -1,0 +1,137 @@
+第六章 二叉树 part05
+
+513.找树左下角的值
+
+https://leetcode.cn/problems/find-bottom-left-tree-value/
+
+#递归法+回溯+类的成员变量
+class Solution:
+    def findBottomLeftValue(self, root: TreeNode) -> int:
+        self.max_depth = float('-inf')  # 记录最大深度
+        self.result = None  # 记录最左下角的值
+        self.traversal(root, 0)  # 调用递归函数进行遍历
+        return self.result  # 返回最左下角的值
+    
+    def traversal(self, node, depth):
+        if not node.left and not node.right:  # 如果当前节点是叶子节点
+            if depth > self.max_depth:  # 判断当前深度是否大于已记录的最大深度
+                self.max_depth = depth  # 更新最大深度
+                self.result = node.val  # 更新最左下角的值
+            return
+        
+        if node.left:  # 处理左子树
+            depth += 1  # 深度加1
+            self.traversal(node.left, depth)  # 递归处理左子树
+            depth -= 1  # 回溯，深度减1
+        if node.right:  # 处理右子树
+            depth += 1  # 深度加1
+            self.traversal(node.right, depth)  # 递归处理右子树
+            depth -= 1  # 回溯，深度减1
+            
+#递归法+回溯+方法内的局部变量
+在这个修改后的代码中，max_depth 和 result 被定义为 findBottomLeftValue 方法内的局部变量。
+为了在 traversal 函数中使用这些局部变量，我们使用了 nonlocal 关键字来声明它们为外部变量。
+这样修改后，max_depth 和 result 只在 findBottomLeftValue 方法中使用，并且不再是类的成员变量。
+它们的作用范围被限制在了 findBottomLeftValue 方法内部。
+
+
+class Solution:
+    def findBottomLeftValue(self, root: TreeNode) -> int:
+        max_depth = float('-inf')  # 定义局部变量 max_depth
+        result = None  # 定义局部变量 result
+        
+        def traversal(node, depth):
+            nonlocal max_depth, result  # 使用 nonlocal 关键字声明变量为外部变量
+            if not node.left and not node.right:
+                if depth > max_depth:
+                    max_depth = depth
+                    result = node.val
+                return
+            
+            if node.left:
+                depth += 1
+                traversal(node.left, depth)
+                depth -= 1
+            if node.right:
+                depth += 1
+                traversal(node.right, depth)
+                depth -= 1
+        
+        traversal(root, 0)
+        return result
+#迭代法
+from collections import deque
+
+class Solution:
+    def findBottomLeftValue(self, root):
+        if root is None:  # 如果根节点为空，则返回0
+            return 0
+        
+        queue = deque()  # 创建一个队列用于层序遍历
+        queue.append(root)  # 将根节点入队
+        result = 0  # 初始化最左下角的值
+        
+        while queue:
+            size = len(queue)  # 当前层的节点数量
+            for i in range(size):
+                node = queue.popleft()  # 出队一个节点
+                if i == 0:  # 如果是当前层的第一个节点，更新最左下角的值
+                    result = node.val
+                
+                if node.left:  # 如果有左子节点，将其入队
+                    queue.append(node.left)
+                if node.right:  # 如果有右子节点，将其入队
+                    queue.append(node.right)
+        
+        return result  # 返回最左下角的值
+        
+        
+112. 路径总和
+https://leetcode.cn/problems/path-sum/
+
+class Solution:
+    def traversal(self, cur: TreeNode, count: int) -> bool:
+        if not cur.left and not cur.right and count == 0:  # 遇到叶子节点，并且计数为0
+            return True
+        if not cur.left and not cur.right:  # 遇到叶子节点直接返回
+            return False
+
+        if cur.left:  # 左
+            count -= cur.left.val  # 减去左子节点的值
+            if self.traversal(cur.left, count):  # 递归，处理节点
+                return True
+            count += cur.left.val  # 回溯，撤销处理结果
+
+        if cur.right:  # 右
+            count -= cur.right.val  # 减去右子节点的值
+            if self.traversal(cur.right, count):  # 递归，处理节点
+                return True
+            count += cur.right.val  # 回溯，撤销处理结果
+
+        return False
+
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
+        if root is None:
+            return False
+        return self.traversal(root, targetSum - root.val)
+
+首先，traversal 方法用于遍历二叉树的节点。对于每个节点 cur 和当前的计数 count，进行以下处理：
+
+如果 cur 是叶子节点（即没有左子节点和右子节点），并且 count 等于 0，说明找到了一条路径，返回 True。
+如果 cur 是叶子节点但 count 不为 0，说明路径和不符合要求，返回 False。
+如果有左子节点，将左子节点的值从 count 中减去，然后递归调用 traversal 处理左子节点。
+如果递归处理左子节点返回 True，则说明找到了一条符合要求的路径，直接返回 True。
+如果递归处理左子节点返回 False，需要回溯，将左子节点的值重新加回 count 中。
+类似地，如果有右子节点，将右子节点的值从 count 中减去，然后递归调用 traversal 处理右子节点，并进行回溯。
+
+最后，hasPathSum 方法用于处理根节点和目标和。如果根节点为空，直接返回 False。否则，调用 traversal 方法，并将目标和减去根节点的值作为初始的计数值传递给 traversal 方法。
+
+通过递归遍历二叉树的节点，并在每个节点处更新计数值，可以判断是否存在一条路径使得路径上节点值之和等于目标和。
+
+
+
+
+
+
+
+
