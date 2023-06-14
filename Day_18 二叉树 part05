@@ -129,9 +129,91 @@ class Solution:
 通过递归遍历二叉树的节点，并在每个节点处更新计数值，可以判断是否存在一条路径使得路径上节点值之和等于目标和。
 
 
+112. 路径总和
+https://leetcode.cn/problems/path-sum/
+
+class Solution:
+    def traversal(self, cur: TreeNode, count: int) -> bool:
+        if not cur.left and not cur.right and count == 0:  # 遇到叶子节点，并且计数为0
+            return True
+        if not cur.left and not cur.right:  # 遇到叶子节点直接返回
+            return False
+
+        if cur.left:  # 左
+            count -= cur.left.val  # 减去左子节点的值
+            if self.traversal(cur.left, count):  # 递归，处理节点
+                return True
+            count += cur.left.val  # 回溯，撤销处理结果
+
+        if cur.right:  # 右
+            count -= cur.right.val  # 减去右子节点的值
+            if self.traversal(cur.right, count):  # 递归，处理节点
+                return True
+            count += cur.right.val  # 回溯，撤销处理结果
+
+        return False
+
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
+        if root is None:
+            return False
+        return self.traversal(root, targetSum - root.val)
+
+首先，traversal 方法用于遍历二叉树的节点。对于每个节点 cur 和当前的计数 count，进行以下处理：
+
+如果 cur 是叶子节点（即没有左子节点和右子节点），并且 count 等于 0，说明找到了一条路径，返回 True。
+如果 cur 是叶子节点但 count 不为 0，说明路径和不符合要求，返回 False。
+如果有左子节点，将左子节点的值从 count 中减去，然后递归调用 traversal 处理左子节点。
+如果递归处理左子节点返回 True，则说明找到了一条符合要求的路径，直接返回 True。
+如果递归处理左子节点返回 False，需要回溯，将左子节点的值重新加回 count 中。
+类似地，如果有右子节点，将右子节点的值从 count 中减去，然后递归调用 traversal 处理右子节点，并进行回溯。
+
+最后，hasPathSum 方法用于处理根节点和目标和。如果根节点为空，直接返回 False。否则，调用 traversal 方法，并将目标和减去根节点的值作为初始的计数值传递给 traversal 方法。
+
+通过递归遍历二叉树的节点，并在每个节点处更新计数值，可以判断是否存在一条路径使得路径上节点值之和等于目标和。
 
 
+106.从中序与后序遍历序列构造二叉树
+https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 
+第一步：如果数组大小为零的话，说明是空节点了。
+
+第二步：如果不为空，那么取后序数组最后一个元素作为节点元素。
+
+第三步：找到后序数组最后一个元素在中序数组的位置，作为切割点
+
+第四步：切割中序数组，切成中序左数组和中序右数组 （顺序别搞反了，一定是先切中序数组）
+
+第五步：切割后序数组，切成后序左数组和后序右数组
+
+第六步：递归处理左区间和右区间
+
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+
+        #第一步：如果数组大小为零的话，说明是空节点了。
+        if not postorder:
+            return None
+
+        #第二步：如果不为空，那么取后序数组最后一个元素作为节点元素。
+        root_val = postorder[-1]
+        root = TreeNode(root_val)
+
+        #第三步：找到后序数组最后一个元素在中序数组的位置，作为切割点        
+        separator_idx = inorder.index(root_val)
+
+        #第四步：切割中序数组，切成中序左数组和中序右数组
+        inorder_left = inorder[:separator_idx]
+        inorder_right = inorder[separator_idx+1:]
+
+        #第五步：切割后序数组，切成后序左数组和后序右数组
+        postorder_left = postorder[:len(inorder_left)]
+        postorder_right = postorder[len(inorder_left): len(postorder) -1]
+
+        #第六步：递归处理左区间和右区间
+        root.left = self.buildTree(inorder_left, postorder_left)
+        root.right = self.buildTree(inorder_right, postorder_right)
+
+        return root
 
 
 
