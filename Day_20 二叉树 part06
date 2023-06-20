@@ -102,4 +102,87 @@ class Solution:
         
         return root #注意: 本题我们创建了新节点. 
 
+700.二叉搜索树中的搜索
+https://leetcode.cn/problems/search-in-a-binary-search-tree/
+
+
+#递归1
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        # 为什么要有返回值: 
+        #   因为搜索到目标节点就要立即return，
+        #   这样才是找到节点就返回（搜索某一条边），如果不加return，就是遍历整棵树了。
+
+        if not root or root.val == val: 
+            return root
+
+        if root.val > val: 
+            return self.searchBST(root.left, val)
+
+        if root.val < val: 
+            return self.searchBST(root.right, val)
+
+
+#迭代2
+class Solution:
+    def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+        while root:
+            if val < root.val:
+                root = root.left
+
+            elif val > root.val:
+                root = root.right
+
+            else:
+                return root
+
+        return None
+
+98.验证二叉搜索树
+https://leetcode.cn/problems/validate-binary-search-tree/
+
+
+#递归法（版本一）利用中序递增性质，转换成数组
+class Solution:
+    def __init__(self):
+        self.vec = []  # 初始化一个空列表，用于按顺序存储二叉树的元素
+
+    def traversal(self, root):
+        if root is None:  # 基本情况：如果根节点为空，返回
+            return
+        self.traversal(root.left)  # 递归遍历左子树
+        self.vec.append(root.val)  # 将当前节点的值添加到列表中
+        self.traversal(root.right)  # 递归遍历右子树
+
+    def isValidBST(self, root):
+        self.vec = []  # 在执行遍历之前清空列表
+        self.traversal(root)  # 执行二叉树的中序遍历
+
+        # 检查列表中的元素是否严格递增
+        for i in range(1, len(self.vec)):
+            if self.vec[i] <= self.vec[i - 1]:  # 如果任何元素小于等于前一个元素，返回False
+                return False
+
+        return True  # 如果所有元素都严格递增，返回True
+
+#递归法（版本二）设定极小值，进行比较
+class Solution:
+    def __init__(self):
+        self.maxVal = float('-inf')  # 使用负无穷大来初始化最大值，因为后台测试数据中可能存在 int 类型的最小值
+
+    def isValidBST(self, root):
+        if root is None:  # 如果根节点为空，表示已经遍历到叶子节点的下一层，返回True
+            return True
+
+        left = self.isValidBST(root.left)  # 递归验证左子树是否是二叉搜索树
+
+        # 中序遍历，在遍历过程中验证元素是否按照从小到大的顺序排列
+        if self.maxVal < root.val:  # 当前节点的值大于最大值，符合二叉搜索树的要求
+            self.maxVal = root.val  # 更新最大值
+        else:
+            return False  # 当前节点的值小于等于最大值，不符合二叉搜索树的要求，返回False
+
+        right = self.isValidBST(root.right)  # 递归验证右子树是否是二叉搜索树
+
+        return left and right  # 左右子树都是二叉搜索树才返回True，否则返回False
 
