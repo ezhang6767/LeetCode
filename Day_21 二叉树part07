@@ -43,3 +43,114 @@ class Solution:
     def getMinimumDifference(self, root):
         self.traversal(root)
         return self.result
+        
+        
+        
+501.二叉搜索树中的众数
+https://leetcode.cn/problems/find-mode-in-binary-search-tree/
+
+from collections import defaultdict
+#递归法（版本一）利用字典
+class Solution:
+    def searchBST(self, cur, freq_map):
+        if cur is None:  # 基本情况：如果当前节点为空，返回
+            return
+        freq_map[cur.val] += 1  # 统计当前节点值的频率
+        self.searchBST(cur.left, freq_map)  # 递归遍历左子树
+        self.searchBST(cur.right, freq_map)  # 递归遍历右子树
+
+    def findMode(self, root):
+        freq_map = defaultdict(int)  # 创建一个默认值为0的字典，用于记录元素的频率
+        result = []  # 存储众数的结果列表
+        if root is None:  # 如果根节点为空，直接返回空结果列表
+            return result
+        self.searchBST(root, freq_map)  # 统计二叉搜索树中每个元素的频率
+        max_freq = max(freq_map.values())  # 找到出现频率的最大值
+        for key, freq in freq_map.items():  # 遍历频率字典
+            if freq == max_freq:  # 如果频率等于最大频率，将该元素添加到结果列表中
+                result.append(key)
+        return result  # 返回结果列表，即众数的集合
+        
+        
+递归法（版本二）利用二叉搜索树性质
+class Solution:
+    def __init__(self):
+        self.maxCount = 0  # 最大频率
+        self.count = 0  # 统计频率
+        self.pre = None  # 前一个节点
+        self.result = []  # 结果列表
+
+    def searchBST(self, cur):
+        if cur is None:  # 基本情况：如果当前节点为空，返回
+            return
+
+        self.searchBST(cur.left)  # 左子树递归
+        # 处理当前节点
+        if self.pre is None:  # 如果是第一个节点
+            self.count = 1
+        elif self.pre.val == cur.val:  # 如果与前一个节点的值相同
+            self.count += 1
+        else:  # 如果与前一个节点的值不同
+            self.count = 1
+        self.pre = cur  # 更新前一个节点为当前节点
+
+        if self.count == self.maxCount:  # 如果当前频率与最大频率相同，将当前节点值加入结果列表
+            self.result.append(cur.val)
+
+        if self.count > self.maxCount:  # 如果当前频率大于最大频率
+            self.maxCount = self.count  # 更新最大频率
+            self.result = [cur.val]  # 更新结果列表为当前节点值，注意要清空之前的结果
+
+        self.searchBST(cur.right)  # 右子树递归
+        return
+
+    def findMode(self, root):
+        self.count = 0
+        self.maxCount = 0
+        self.pre = None  # 记录前一个节点
+        self.result = []  # 初始化结果列表
+
+        self.searchBST(root)  # 通过递归遍历二叉搜索树统计频率和找出众数
+        return self.result  # 返回结果列表，即众数的集合
+
+236. 二叉树的最近公共祖先
+https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+
+#递归法（版本一）
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if root == q or root == p or not root:  # 基本情况：如果当前节点为p或q，或者当前节点为空，直接返回当前节点
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)  # 在左子树中寻找最近公共祖先
+        right = self.lowestCommonAncestor(root.right, p, q)  # 在右子树中寻找最近公共祖先
+
+        if left and right:  # 如果p和q分别位于当前节点的左右子树中，说明当前节点就是最近公共祖先
+            return root
+
+        if not left and right:  # 如果左子树中没有找到公共祖先，但在右子树中找到了，返回右子树中找到的公共祖先
+            return right
+
+        if not right and left:  # 如果右子树中没有找到公共祖先，但在左子树中找到了，返回左子树中找到的公共祖先
+            return left
+
+        else:  # 如果左子树和右子树都没有找到公共祖先，返回None
+            return None
+
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if root == p or root == q or not root:
+            return root
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        if left and right:
+            return root
+
+        if not left:
+            return right
+
+        return left
+
