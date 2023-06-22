@@ -24,3 +24,57 @@ class Solution:
 通过递归地修剪二叉搜索树的节点值，使其符合给定的区间 [low, high]。首先判断根节点是否为空，如果为空直接返回。
 然后根据根节点的值与区间边界的关系，决定向左子树还是右子树进行递归修剪。对左子树和右子树分别进行递归修剪，最后返回修剪后的根节点。
 
+108.将有序数组转换为二叉搜索树
+https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/
+#
+class Solution:
+    def traversal(self, nums: List[int], left: int, right: int) -> TreeNode:
+        if left > right:
+            return None
+        
+        mid = left + (right - left) // 2
+        root = TreeNode(nums[mid])  # 选取有序数组的中间元素作为根节点
+        root.left = self.traversal(nums, left, mid - 1)  # 构建左子树，递归处理左半部分数组
+        root.right = self.traversal(nums, mid + 1, right)  # 构建右子树，递归处理右半部分数组
+        return root
+    
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+        root = self.traversal(nums, 0, len(nums) - 1)  # 调用辅助函数，传入数组和边界索引
+        return root
+
+该解法使用了二分法的思想，通过递归地将有序数组的中间元素作为根节点，
+然后递归处理左右子数组构建左右子树，最终得到一个平衡的二叉搜索树。
+时间复杂度为 O(n)，其中 n 是数组的长度。
+
+538.把二叉搜索树转换为累加树
+#https://leetcode.cn/problems/convert-bst-to-greater-tree/
+class Solution:
+    def convertBST(self, root: TreeNode) -> TreeNode:
+        self.pre = 0  # 记录前一个节点的数值
+        self.traversal(root)  # 进行中序遍历
+        return root
+
+    def traversal(self, cur):
+        if cur is None:
+            return
+
+        self.traversal(cur.right)  # 递归遍历右子树
+
+        # 对当前节点进行操作
+        cur.val += self.pre  # 当前节点的值加上前一个节点的值
+        self.pre = cur.val  # 更新前一个节点的值为当前节点的值
+
+        self.traversal(cur.left)  # 递归遍历左子树
+
+
+
+核心思想是利用中序遍历从右子树开始递归遍历，这样可以先访问到较大的节点值，再累加到较小的节点值上，从而实现累加的效果。
+
+convertBST 方法是主函数，它接收一个二叉搜索树的根节点 root，并返回转换后的累加树的根节点。
+在 convertBST 方法中，初始化 pre 为 0，用来记录前一个节点的数值。
+然后调用 traversal 方法进行中序遍历，传入根节点 root。
+在 traversal 方法中，首先判断当前节点 cur 是否为空，如果为空，则直接返回。
+然后先递归遍历右子树，即调用 traversal(cur.right)。
+接下来，将当前节点 cur 的值加上前一个节点的值 self.pre，并更新 self.pre 为当前节点的值。这样就完成了累加操作。
+最后递归遍历左子树，即调用 traversal(cur.left)。
+最终返回根节点 root，即转换后的累加树。
