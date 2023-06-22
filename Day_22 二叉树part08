@@ -34,3 +34,134 @@ class Solution:
             else:
                 return root
         return None
+
+
+701.二叉搜索树中的插入操作
+https://leetcode.cn/problems/insert-into-a-binary-search-tree/
+
+#递归法
+class Solution:
+    def __init__(self):
+        self.parent = None  # 初始化 parent 为 None
+
+    def traversal(self, cur, val):
+        if cur is None:
+            node = TreeNode(val)  # 创建一个新的节点
+            if val > self.parent.val:  # 如果要插入的值大于 parent 的值，则将新节点作为 parent 的右子节点
+                self.parent.right = node
+            else:  # 如果要插入的值小于等于 parent 的值，则将新节点作为 parent 的左子节点
+                self.parent.left = node
+            return
+
+        self.parent = cur  # 更新 parent 为当前节点
+
+        if cur.val > val:  # 如果要插入的值小于当前节点的值，继续在左子树中插入
+            self.traversal(cur.left, val)
+
+        if cur.val < val:  # 如果要插入的值大于当前节点的值，继续在右子树中插入
+            self.traversal(cur.right, val)
+
+    def insertIntoBST(self, root, val):
+        self.parent = TreeNode(0)  # 创建一个虚拟的根节点，用于保存插入的新节点的父节点
+        if root is None:
+            return TreeNode(val)  # 如果树为空，直接创建一个节点作为根节点并返回
+        self.traversal(root, val)  # 在二叉搜索树中插入节点
+        return root  # 返回根节点
+
+在递归过程中，将当前节点作为父节点，并根据要插入的值与当前节点值的大小关系，继续在左子树或右子树中插入节点。
+在 insertIntoBST 方法中，创建一个虚拟的根节点 self.parent，用于保存插入节点的父节点。
+如果根节点为空，说明树为空，直接创建一个节点作为根节点，并返回。
+调用 traversal 方法在二叉搜索树中插入节点。
+返回根节点。
+该代码通过递归地遍历二叉搜索树，在找到要插入的位置后，创建一个新节点并将其插入到正确的位置。
+
+虚拟的根节点 self.parent 在插入过程中保存着插入节点的父节点，用于确定插入的位置。最后返回根节点。
+
+#迭代法
+class Solution:
+    def insertIntoBST(self, root, val):
+        if root is None:
+            return TreeNode(val)  # 如果树为空，直接创建一个节点作为根节点并返回
+
+        parent = None  # 初始化 parent 为 None
+        cur = root  # 从根节点开始遍历
+
+        while cur:
+            parent = cur  # 更新 parent 为当前节点
+
+            if val < cur.val:  # 如果要插入的值小于当前节点的值，继续在左子树中搜索
+                cur = cur.left  
+            else:  # 如果要插入的值大于等于当前节点的值，继续在右子树中搜索
+                cur = cur.right
+                
+        #判断是插在parent的哪边
+        if val < parent.val:  # 如果要插入的值小于 parent 的值，则将新节点作为 parent 的左子节点
+            parent.left = TreeNode(val)
+        else:  # 如果要插入的值大于等于 parent 的值，则将新节点作为 parent 的右子节点
+            parent.right = TreeNode(val)
+
+        return root  # 返回根节点
+        
+递归法（版本四）
+class Solution:
+    def insertIntoBST(self, root, val):
+        if root is None:
+            node = TreeNode(val)  # 如果树为空，直接将插入节点作为根节点创建并返回
+            return node
+
+        if root.val > val:  # 如果要插入的值小于根节点的值，继续在左子树中插入节点
+            root.left = self.insertIntoBST(root.left, val)
+        if root.val < val:  # 如果要插入的值大于根节点的值，继续在右子树中插入节点
+            root.right = self.insertIntoBST(root.right, val)
+
+        return root  # 返回根节点
+
+701. 二叉搜索树中的插入操作
+https://leetcode.cn/problems/insert-into-a-binary-search-tree/
+
+#递归法（版本一） 
+class Solution:
+    def deleteNode(self, root, key):
+        if not root:
+            return root
+
+        if root.val == key:  # 找到要删除的节点
+            if not root.left and not root.right:  # 被删除的节点没有子节点
+                return None
+            elif not root.left:  # 被删除的节点只有右子节点
+                return root.right
+            elif not root.right:  # 被删除的节点只有左子节点
+                return root.left
+            else:  # 被删除的节点有两个子节点
+                cur = root.right    #cur找到被删除节点的右子树（左右都可以）
+                while cur.left:  # 找到被删除节点的右子树的最左侧的节点
+                    cur = cur.left
+                cur.left = root.left  # 将被删除节点的左子树连接到右子树中最左侧的节点的左子节点
+                return root.right  # 返回右子树作为新的根节点
+
+        if root.val > key:  # 如果要删除的值小于当前节点的值，在左子树中递归删除节点
+            root.left = self.deleteNode(root.left, key)
+        if root.val < key:  # 如果要删除的值大于当前节点的值，在右子树中递归删除节点
+            root.right = self.deleteNode(root.right, key)
+
+        return root  # 返回根节点
+
+#递归法（版本二） 
+class Solution:
+    def deleteNode(self, root, key):
+        if root is None:  # 如果根节点为空，直接返回
+            return root
+
+        if root.val == key:  # 找到要删除的节点
+            if root.right is None:  # 如果右子树为空，直接返回左子树作为新的根节点
+                return root.left
+            cur = root.right
+            while cur.left:  # 找到右子树中的最左节点
+                cur = cur.left
+            root.val, cur.val = cur.val, root.val  # 将要删除的节点值与最左节点值交换 
+        #没看明白如何为什么交换，如何删除。
+        root.left = self.deleteNode(root.left, key)  # 在左子树中递归删除目标节点
+        root.right = self.deleteNode(root.right, key)  # 在右子树中递归删除目标节点
+        return root
+
+
