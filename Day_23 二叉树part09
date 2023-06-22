@@ -1,0 +1,26 @@
+669. 修剪二叉搜索树
+https://leetcode.cn/problems/trim-a-binary-search-tree/
+
+
+难点在于不能简单的移除整个节点，而需要对其右左子树进行剪枝，然后再链接。
+
+#递归法（版本一）
+class Solution:
+    def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+        if not root:  # 如果根节点为空，直接返回
+            return None
+        
+        if root.val < low:  # 如果根节点值小于下界，寻找符合区间 [low, high] 的节点在右子树中
+            return self.trimBST(root.right, low, high)
+        
+        if root.val > high:  # 如果根节点值大于上界，寻找符合区间 [low, high] 的节点在左子树中
+            return self.trimBST(root.left, low, high)
+        
+        root.left = self.trimBST(root.left, low, high)  # 对左子树进行修剪
+        root.right = self.trimBST(root.right, low, high)  # 对右子树进行修剪
+        
+        return root
+
+通过递归地修剪二叉搜索树的节点值，使其符合给定的区间 [low, high]。首先判断根节点是否为空，如果为空直接返回。
+然后根据根节点的值与区间边界的关系，决定向左子树还是右子树进行递归修剪。对左子树和右子树分别进行递归修剪，最后返回修剪后的根节点。
+
