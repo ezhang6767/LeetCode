@@ -1,1 +1,58 @@
+77 组合
+https://leetcode.cn/problems/combinations/
 
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        result = []  # 存放结果集
+        self.backtracking(n, k, 1, [], result)
+        return result
+
+    def backtracking(self, n, k, startIndex, path, result):
+        if len(path) == k:  # 如果路径长度达到 k，将路径加入结果集
+            result.append(path[:])
+            return
+
+      #即使没有显式地写上 return 语句，当前的递归调用也会在执行完 result.append(path[:]) 后自然结束，回溯到上一层的递归调用。
+      #因此，写或不写 return 语句都不会产生影响。
+      #但是，为了代码的清晰性和明确性，建议在这种情况下显式地使用 return 语句来结束递归调用。
+
+
+        for i in range(startIndex, n + 1):  # 遍历可能的选择,由于 Python 的 range 函数生成的范围是左闭右开区间，
+                                            # 所以在 range(startIndex, n + 1) 中选择的范围是从 startIndex 到 n，包括 n。
+            path.append(i)  # 处理当前节点
+            self.backtracking(n, k, i + 1, path, result)  # 递归进入下一层，startIndex 更新为 i+1
+            path.pop()  # 回溯，撤销当前节点的选择
+
+#剪枝后
+class Solution:
+    def combine(self, n: int, k: int) -> List[List[int]]:
+        result = []  # 存放结果集
+        self.backtracking(n, k, 1, [], result)
+        return result
+    
+    def backtracking(self, n, k, startIndex, path, result):
+        if len(path) == k:
+            result.append(path[:])  # 将当前路径添加到结果集中
+            return  # 结束当前的递归
+        
+        # 优化循环范围，避免不必要的迭代
+        # endIndex 表示循环的终点，确保后续的循环不会生成超过目标长度 k 的组合
+        endIndex = n - (k - len(path)) + 2
+        for i in range(startIndex, endIndex):
+            path.append(i)  # 处理节点
+            self.backtracking(n, k, i + 1, path, result)
+            path.pop()  # 回溯，撤销处理的节点
+
+在回溯算法中，我们希望循环的终点不超过可选择的数的总个数 n。在计算 endIndex 时，我们需要确保至少有 k - len(path) 个剩余的可选择的数可以被选择。
+
+考虑以下情况：
+
+当 len(path) = 0 时，表示当前路径还没有选择任何数。在这种情况下，我们需要保证至少有 k 个剩余的可选择的数可以被选择，即 n - len(path) >= k。
+当 len(path) > 0 时，表示当前路径已经选择了一些数。在这种情况下，我们需要保证至少有 k - len(path) 个剩余的可选择的数可以被选择，即 n - len(path) >= k - len(path)。
+根据上述两种情况，我们可以推导出 endIndex = n - (k - len(path)) + 1 可以确保循环的终点不超过 n。
+
+然而，在代码中使用 range() 函数时，循环的终点是不包含的。
+
+因此，为了确保循环的终点不超过 n，我们需要在计算结果上再加上 1，即 endIndex = n - (k - len(path)) + 2。
+
+这样可以保证我们遍历的范围是 [startIndex, endIndex)，其中 startIndex 是当前路径的最后一个选择的数的下一个数，endIndex 是不超过 n 的值。
