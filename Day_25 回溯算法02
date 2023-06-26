@@ -1,0 +1,124 @@
+216.组合总和III
+https://leetcode.cn/problems/combination-sum-iii/
+
+class Solution:
+    def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+        result = []  # 存放结果集
+        self.backtracking(n, k, 0, 1, [], result)  # 调用回溯函数
+        return result
+
+    def backtracking(self, targetSum, k, currentSum, startIndex, path, result):
+        if currentSum > targetSum:  # 如果当前和大于目标和，剪枝返回
+            return
+
+        if len(path) == k and currentSum == targetSum:  # 如果路径长度等于k且当前和等于目标和，将路径添加到结果集
+            result.append(path[:])
+            return
+
+        for i in range(startIndex, 9 - (k - len(path)) + 2):  # 遍历可选数字的范围
+            currentSum += i  # 将当前数字加入当前和
+            path.append(i)  # 将当前数字加入路径
+            self.backtracking(targetSum, k, currentSum, i + 1, path, result)  # 递归调用回溯函数
+            currentSum -= i  # 回溯，将当前数字从当前和中减去
+            path.pop()  # 回溯，将当前数字从路径中移除
+
+这个解法使用回溯算法来解决组合总和 III 的问题。回溯算法通过不断尝试各种选择，并在满足条件时记录结果，最终得到所有符合条件的组合。
+
+在给定的解法中，combinationSum3 函数是入口函数，它初始化结果集 result，并调用回溯函数 backtracking 来进行递归搜索。
+
+backtracking 函数是核心的回溯函数。它接受目标和 targetSum、需要选择的数字个数 k、当前和 currentSum、起始索引 startIndex、当前路径 path 和结果集 result 作为参数。
+
+在回溯函数中，我们首先进行剪枝操作。如果当前和 currentSum 大于目标和 targetSum，说明路径不满足要求，直接返回。
+
+然后，我们检查是否满足终止条件。如果路径长度等于 k 且当前和等于目标和，将路径添加到结果集。
+
+接下来，我们进入循环，遍历可选的数字。循环的起始索引为 startIndex，终止索引通过计算得到，即 9 - (k - len(path)) + 2。这样可以限制循环的范围，避免重复的组合。
+
+在循环中，我们依次选择数字，并更新当前和和路径。然后，递归调用回溯函数，继续向下搜索。
+
+在递归调用之后，我们进行回溯操作，将当前选择的数字从当前和和路径中移除，以便尝试其他选择。
+
+通过不断的选择和回溯，我们可以得到所有满足条件的组合，最终将它们添加到结果集中返回。
+
+总结来说，这个解法使用回溯算法来搜索满足条件的组合，通过剪枝操作来提高效率。
+
+在每一层的递归中，我们选择一个数字，并更新当前和和路径，然后递归搜索下一层。
+
+在递归调用之后，我们进行回溯操作，将选择的数字从当前和和路径中移除，以便尝试其他选择。最终，得到所有满足条件的组合。
+
+17.电话号码的字母组合
+https://leetcode.cn/problems/letter-combinations-of-a-phone-number/
+
+
+class Solution:
+    def __init__(self):
+        self.letterMap = [
+            "",     # 0
+            "",     # 1
+            "abc",  # 2
+            "def",  # 3
+            "ghi",  # 4
+            "jkl",  # 5
+            "mno",  # 6
+            "pqrs", # 7
+            "tuv",  # 8
+            "wxyz"  # 9
+        ]
+        self.result = []  # 存放结果集
+        self.s = ""  # 存放当前组合的字符串
+
+    def backtracking(self, digits, index):
+        if index == len(digits):  # 如果索引等于数字串的长度，说明已经完成了一种组合
+            self.result.append(self.s)  # 将当前组合添加到结果集
+            return
+
+        digit = int(digits[index])  # 将索引处的数字转换为整数
+        letters = self.letterMap[digit]  # 获取对应的字符集
+        for i in range(len(letters)):
+            self.s += letters[i]  # 处理字符，将当前字符添加到当前组合字符串
+            self.backtracking(digits, index + 1)  # 递归调用，处理下一个数字，注意索引加1
+            self.s = self.s[:-1]  # 回溯，删除最后添加的字符，以便尝试其他字符
+
+    def letterCombinations(self, digits):
+        if len(digits) == 0:  # 处理特殊情况，空字符串直接返回结果集
+            return self.result
+        self.backtracking(digits, 0)  # 调用回溯函数，初始索引为0
+        return self.result  # 返回结果集
+
+假设输入的 digits 字符串为 "23"，我们可以模拟代码中 self.result 结果集的生成过程：
+
+初始时，result = []，s = ""。
+开始递归调用 backtracking("23", 0)，index 初始值为 0。
+在第一层递归中，处理第一个数字 "2"：
+digit = int(digits[0]) = 2，对应的字符集为 "abc"。
+进入循环，遍历字符集中的每个字符：
+拼接字符到 s： s += "a"，此时 s = "a"。
+递归调用 backtracking("23", 1)。
+在第二层递归中，处理第二个数字 "3"：
+digit = int(digits[1]) = 3，对应的字符集为 "def"。
+进入循环，遍历字符集中的每个字符：
+拼接字符到 s： s += "d"，此时 s = "ad"。
+满足递归结束条件，将 s 添加到结果集 result： result.append("ad")。
+回溯，删除最后添加的字符，此时 s = "a"。
+继续下一个字符 "e"：
+拼接字符到 s： s += "e"，此时 s = "ae"。
+满足递归结束条件，将 s 添加到结果集 result： result.append("ae")。
+回溯，删除最后添加的字符，此时 s = "a"。
+继续下一个字符 "f"：
+拼接字符到 s： s += "f"，此时 s = "af"。
+满足递归结束条件，将 s 添加到结果集 result： result.append("af")。
+回溯，删除最后添加的字符，此时 s = "a"。
+退出循环，回溯到上一层递归，此时 s = ""。
+继续下一个字符 "b"：
+拼接字符到 s： s += "b"，此时 s = "b"。
+递归调用 backtracking("23", 1)，处理第二个数字 "3"。
+类似地，将所有组合情况添加到 result 中。
+退出循环，回溯到上一层递归，此时 s = ""。
+继续下一个字符 "c"：
+拼接字符到 s： s += "c"，此时 s = "c"。
+递归调用 backtracking("23", 1)，处理第二个数字 "3"。
+类似地，将所有组合情况添加到 result 中。
+退出循环，回溯到上一层递归，此时 s = ""。
+退出循环，回溯到上一层递归，此时 s = ""。
+结束第一层递归，此时 result 中包含了所有可能的组合，即 ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]。
+这样，我们通过递归的方式生成了所有可能的字母组合，并将它们添加到 result 结果集中。
