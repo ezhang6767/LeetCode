@@ -32,7 +32,7 @@ class Solution:
             return  # 返回上一层递归，继续搜索其他可能的组合
 
         for i in range(startIndex, len(candidates)):
-            if total + candidates[i] > target:
+            if total + candidates[i] > target:    #剪枝操作
                 break  # 如果当前总和加上当前数字已经大于目标值，结束当前循环，进行剪枝
             total += candidates[i]  # 将当前数字加入总和
             path.append(candidates[i])  # 将当前数字加入路径
