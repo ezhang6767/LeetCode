@@ -1,0 +1,55 @@
+39. 组合总和
+https://leetcode.cn/problems/combination-sum/
+
+#回溯（版本一）
+class Solution:
+    def backtracking(self, candidates, target, total, startIndex, path, result):
+        # 递归的回溯函数，用于生成组合
+        if total > target:
+            return  # 如果当前总和已经大于目标值，直接返回，剪枝操作
+        if total == target:
+            result.append(path[:])  # 如果当前总和等于目标值，将路径加入结果集
+            return  # 返回上一层递归，继续搜索其他可能的组合
+
+        for i in range(startIndex, len(candidates)):  #此时i为下标
+            total += candidates[i]  # 将当前数字加入总和
+            path.append(candidates[i])  # 将当前数字加入路径
+            self.backtracking(candidates, target, total, i, path, result)  # 递归调用自身，继续生成组合
+            total -= candidates[i]  # 回溯操作，将当前数字从总和中减去
+            path.pop()  # 回溯操作，将当前数字从路径中删除
+
+    def combinationSum(self, candidates, target):
+        result = []  # 存放结果集
+        self.backtracking(candidates, target, 0, 0, [], result)  # 调用回溯函数生成组合
+        return result  # 返回结果集
+
+#回溯剪枝（版本一）
+class Solution:
+    def backtracking(self, candidates, target, total, startIndex, path, result):
+        # 递归的回溯函数，用于生成组合
+        if total == target:
+            result.append(path[:])  # 如果当前总和等于目标值，将路径加入结果集
+            return  # 返回上一层递归，继续搜索其他可能的组合
+
+        for i in range(startIndex, len(candidates)):
+            if total + candidates[i] > target:
+                break  # 如果当前总和加上当前数字已经大于目标值，结束当前循环，进行剪枝
+            total += candidates[i]  # 将当前数字加入总和
+            path.append(candidates[i])  # 将当前数字加入路径
+            self.backtracking(candidates, target, total, i, path, result)  # 递归调用自身，继续生成组合
+            total -= candidates[i]  # 回溯操作，将当前数字从总和中减去
+            path.pop()  # 回溯操作，将当前数字从路径中删除
+
+    def combinationSum(self, candidates, target):
+        result = []  # 存放结果集
+        candidates.sort()  # 需要对候选数字进行排序
+        self.backtracking(candidates, target, 0, 0, [], result)  # 调用回溯函数生成组合
+        return result  # 返回结果集
+
+
+40.组合总和II 
+
+
+
+131.分割回文串  
+
