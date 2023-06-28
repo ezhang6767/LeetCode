@@ -48,6 +48,74 @@ class Solution:
 
 
 40.组合总和II 
+https://leetcode.cn/problems/combination-sum-ii/submissions/
+
+#回溯
+class Solution:
+    def backtracking(self, candidates, target, total, startIndex, path, result):
+        # 回溯函数，用于生成组合
+        if total == target:
+            result.append(path[:])  # 如果当前组合的和等于目标值，将当前路径加入结果集
+            return  # 返回上一层递归，继续搜索其他可能的组合
+
+        for i in range(startIndex, len(candidates)):
+            if i > startIndex and candidates[i] == candidates[i - 1]:     #使用startIndex去重的逻辑：是否是相同数值的第一个树枝，如果不是，则去掉。
+            #条件设置为i != startIndex更容易理解
+
+                continue  # 对于重复的数字，跳过当前循环，避免生成重复的组合
+
+            if total + candidates[i] > target:
+                break  # 如果当前组合的和已经大于目标值，结束当前循环，进入下一个数字
+
+            total += candidates[i]  # 更新当前组合的和
+            path.append(candidates[i])  # 将当前数字加入路径
+            self.backtracking(candidates, target, total, i + 1, path, result)  # 递归调用自身，更新起始索引为 i+1，继续生成组合
+            total -= candidates[i]  # 回溯操作，将当前数字从总和中减去
+            path.pop()  # 回溯操作，将当前数字从路径中删除
+
+    def combinationSum2(self, candidates, target):
+        result = []  # 存放结果集
+        candidates.sort()  # 对候选数字列表进行排序
+        self.backtracking(candidates, target, 0, 0, [], result)  # 调用回溯函数生成组合
+        return result  # 返回结果集
+
+#回溯 使用used
+
+#used[i - 1] == true，说明同一树枝candidates[i - 1]使用过, 可以继续
+#used[i - 1] == false，说明同一树层candidates[i - 1]使用过， 需要跳过
+
+
+
+class Solution:
+    def backtracking(self, candidates, target, total, startIndex, used, path, result):
+        # 回溯函数，用于生成组合
+        if total == target:
+            result.append(path[:])  # 如果当前组合的和等于目标值，将当前路径加入结果集
+            return  # 返回上一层递归，继续搜索其他可能的组合
+
+        for i in range(startIndex, len(candidates)):
+            # 出现重复节点，同层的第一个节点已经被访问过，所以直接跳过
+            if i > 0 and candidates[i] == candidates[i - 1] and not used[i - 1]:    #因为有used数组剪枝，i>0即可。
+                continue
+
+            if total + candidates[i] > target:
+                break  # 如果当前组合的和已经大于目标值，结束当前循环，进入下一个数字
+
+            total += candidates[i]  # 更新当前组合的和
+            path.append(candidates[i])  # 将当前数字加入路径
+            used[i] = True  # 标记当前数字已被使用
+            self.backtracking(candidates, target, total, i + 1, used, path, result)  # 每个节点仅能选择一次，所以从i+1开始
+            used[i] = False  # 回溯操作，将当前数字标记为未使用
+            total -= candidates[i]  # 回溯操作，将当前数字从总和中减去
+            path.pop()  # 回溯操作，将当前数字从路径中删除
+
+    def combinationSum2(self, candidates, target):
+        used = [False] * len(candidates)  # 用于记录候选数字是否已被使用的列表
+        result = []  # 存放结果集
+        candidates.sort()  # 对候选数字列表进行排序
+        self.backtracking(candidates, target, 0, 0, used, [], result)  # 调用回溯函数生成组合
+        return result  # 返回结果集
+
 
 
 
