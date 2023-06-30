@@ -159,3 +159,61 @@ class Solution:
             i += 1
             j -= 1
         return True
+
+#回溯+优化判定回文函数
+class Solution:
+
+    def partition(self, s: str) -> List[List[str]]:
+        result = []
+        self.backtracking(s, 0, [], result)
+        return result
+
+    def backtracking(self, s, start_index, path, result ):
+        # Base Case
+        if start_index == len(s):
+            result.append(path[:])
+            return
+        
+        # 单层递归逻辑
+        for i in range(start_index, len(s)):
+            # 若反序和正序相同，意味着这是回文串
+            if s[start_index: i + 1] == s[start_index: i + 1][::-1]:
+                path.append(s[start_index:i+1])
+                self.backtracking(s, i+1, path, result)   # 递归纵向遍历：从下一处进行切割，判断其余是否仍为回文串
+                path.pop()             # 回溯
+
+回溯+高效判断回文子串
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        result = []
+        isPalindrome = [[False] * len(s) for _ in range(len(s))]  # 初始化 isPalindrome 矩阵
+        self.computePalindrome(s, isPalindrome)
+        self.backtracking(s, 0, [], result, isPalindrome)
+        return result
+
+    def backtracking(self, s, startIndex, path, result, isPalindrome):
+        if startIndex >= len(s):
+            result.append(path[:])
+            return
+
+        for i in range(startIndex, len(s)):
+            if isPalindrome[startIndex][i]:   # 如果是回文子串
+                substring = s[startIndex:i + 1]
+                path.append(substring)
+                self.backtracking(s, i + 1, path, result, isPalindrome)  # 递归调用：寻找下一个起始位置的子串
+                path.pop()           # 回溯过程，将已经填入的子串弹出
+
+    def computePalindrome(self, s, isPalindrome):
+
+        # 给定一个字符串s, 长度为n, 它成为回文字串的充分必要条件是s[0] == s[n-1]且s[1:n-1]是回文字串。
+        # 可以高效地事先一次性计算出, 针对一个字符串s, 它的任何子串是否是回文字串,
+        # 然后在我们的回溯函数中直接查询即可, 省去了双指针移动判定这一步骤。
+
+        for i in range(len(s) - 1, -1, -1):  # 倒序计算，保证在第 i 行时，第 i+1 行已经计算好了
+            for j in range(i, len(s)):
+                if j == i:                                    #如果 j 等于 i，说明只有一个字符，该子串一定是回文串，将 isPalindrome[i][j] 设置为 True。
+                    isPalindrome[i][j] = True
+                elif j - i == 1:                              #如果 j - i 等于 1，说明有两个字符，如果这两个字符相等，则该子串是回文串，将 isPalindrome[i][j] 设置为 True。
+                    isPalindrome[i][j] = (s[i] == s[j])
+                else:                                         #对于其他情况，如果 s[i] 等于 s[j]，并且 isPalindrome[i+1][j-1] 也是回文串，则该子串是回文串，将 isPalindrome[i][j] 设置为 True。
+                    isPalindrome[i][j] = (s[i] == s[j] and isPalindrome[i+1][j-1])
