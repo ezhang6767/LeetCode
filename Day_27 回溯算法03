@@ -217,3 +217,29 @@ class Solution:
                     isPalindrome[i][j] = (s[i] == s[j])
                 else:                                         #对于其他情况，如果 s[i] 等于 s[j]，并且 isPalindrome[i+1][j-1] 也是回文串，则该子串是回文串，将 isPalindrome[i][j] 设置为 True。
                     isPalindrome[i][j] = (s[i] == s[j] and isPalindrome[i+1][j-1])
+
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        result = []  # 存储最终的回文串分割结果
+        self.partition_helper(s, 0, [], result)  # 调用辅助函数进行回溯
+        return result
+
+    def partition_helper(self, s, start_index, path, result):
+        if start_index == len(s):  # 如果已经遍历完整个字符串，说明找到了一种分割方案
+            result.append(path[:])  # 将当前路径加入结果列表中
+            return
+
+        for i in range(start_index + 1, len(s) + 1):  # 遍历所有可能的切割点
+            sub = s[start_index:i]  # 获取当前切割的子串
+            if self.isPalindrome(sub):  # 如果子串是回文串
+                path.append(sub)  # 将子串加入当前路径
+                self.partition_helper(s, i, path, result)  # 递归继续从下一个位置开始切割
+                path.pop()  # 回溯，将已经加入的子串移出当前路径，尝试其他分割方案
+
+    def isPalindrome(self, s):
+        return all(s[i] == s[len(s) - 1 - i] for i in range(len(s) // 2))
+
+all 函数用于检查回文串的判断条件。它遍历字符串的前半部分（索引从 0 到 len(s) // 2 - 1）并检查对应的字符是否与后半部分对称位置的字符相等。
+如果所有对称位置的字符都相等，all 函数返回 True，表示该字符串是回文串。
+如果存在任意对称位置的字符不相等，all 函数返回 False，表示该字符串不是回文串。
