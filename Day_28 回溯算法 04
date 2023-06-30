@@ -78,3 +78,33 @@ class Solution:
                 return False
         return True
 
+#回溯解法2
+class Solution:
+    def restoreIpAddresses(self, s: str) -> List[str]:
+        results = []
+        self.backtracking(s, 0, [], results)  # 调用回溯函数进行IP地址恢复
+        return results
+
+    def backtracking(self, s, index, path, results):
+        if index == len(s) and len(path) == 4:  # 终止条件：遍历到字符串末尾且已经找到4段合法IP地址
+            results.append('.'.join(path))  # 将路径中的IP地址段连接成字符串形式，并添加到结果列表中
+            return
+
+        if len(path) > 4:  # 剪枝条件：如果路径中的IP地址段已经超过4段，直接返回，不再继续探索
+            return
+
+        for i in range(index, min(index + 3, len(s))):  # 横向遍历，每次最多选择3个字符作为IP地址段的一部分
+            if self.is_valid(s, index, i):  # 判断当前选择的子串是否合法
+                sub = s[index:i+1]  # 获取子串 [index, i]
+                path.append(sub)  # 将子串添加到路径中
+                self.backtracking(s, i+1, path, results)  # 递归调用，继续下一层遍历，更新index为下一个起始位置
+                path.pop()  # 回溯，将上一次选择的子串从路径中移除
+
+    def is_valid(self, s, start, end):
+        if start > end:
+            return False
+        if s[start] == '0' and start != end:  # 0开头的数字不合法，除非是单个0
+            return False
+        num = int(s[start:end+1])  # 将子串转换为整数
+        return 0 <= num <= 255  # 判断整数是否在合法的IP地址段范围内
+
