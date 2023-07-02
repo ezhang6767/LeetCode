@@ -108,3 +108,36 @@ class Solution:
         num = int(s[start:end+1])  # 将子串转换为整数
         return 0 <= num <= 255  # 判断整数是否在合法的IP地址段范围内
 
+78. 子集
+https://leetcode.cn/problems/subsets/
+
+class Solution:
+    def subsets(self, nums):
+        result = []  # 存储最终的子集结果
+        path = []  # 存储当前的路径（子集）
+        self.backtracking(nums, 0, path, result)  # 调用回溯函数进行子集生成
+        return result
+
+    def backtracking(self, nums, startIndex, path, result):
+        result.append(path[:])  # 在每一层递归中都将当前的路径（子集）添加到结果中，形成一个新的子集
+        for i in range(startIndex, len(nums)):
+            path.append(nums[i])  # 将当前元素添加到路径中，构成新的子集
+            self.backtracking(nums, i + 1, path, result)  # 递归调用，startIndex更新为下一个元素的索引
+            path.pop()  # 回溯，将上一次添加的元素从路径中移除，进入下一轮循环时重新选择下一个元素
+
+#也可以这样写：
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        result = [[]]
+        path = []
+        self.backtracking(nums,0,path,result)
+        return result
+
+    def backtracking(self,nums,startIndex,path,result):
+        
+        for i in range(startIndex, len(nums)):
+            
+            path.append(nums[i])
+            result.append(path[:])
+            self.backtracking(nums,i+1,path,result)
+            path.pop()
