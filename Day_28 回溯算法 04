@@ -141,3 +141,71 @@ class Solution:
             result.append(path[:])
             self.backtracking(nums,i+1,path,result)
             path.pop()
+
+90.子集II
+https://leetcode.cn/problems/subsets-ii/
+
+#回溯+used数组
+class Solution:
+    def subsetsWithDup(self, nums):
+        result = []
+        path = []  # 当前路径
+        used = [False] * len(nums)  # 记录元素是否被使用过
+        nums.sort()  # 对数组进行排序，为了去重
+        self.backtracking(nums, 0, used, path, result)
+        return result
+
+    def backtracking(self, nums, startIndex, used, path, result):
+        result.append(path[:])  # 收集当前路径作为子集
+        for i in range(startIndex, len(nums)):
+            # 判断是否需要跳过当前元素，用于去重
+            # 当前元素与前一个元素相同，并且前一个元素没有被使用过，说明在同一层中已经使用过相同的元素，需要跳过
+            if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+                continue
+            path.append(nums[i])  # 将当前元素加入路径
+            used[i] = True  # 将当前元素标记为已使用
+            self.backtracking(nums, i + 1, used, path, result)  # 递归进入下一层
+            used[i] = False  # 回溯，将当前元素标记为未使用
+            path.pop()  # 回溯，将当前元素从路径中移除
+
+#回溯+利用递归的时候下一个startIndex是i+1
+class Solution:
+    def subsetsWithDup(self, nums):
+        result = []  # 结果列表，用于存储符合条件的子集
+        path = []  # 当前路径，用于构建子集
+        nums.sort()  # 对数组进行排序，为了去重
+        self.backtracking(nums, 0, path, result)  # 调用回溯函数
+        return result  # 返回结果列表
+
+    def backtracking(self, nums, startIndex, path, result):
+        result.append(path[:])  # 将当前路径添加到结果列表，表示找到一个子集
+        for i in range(startIndex, len(nums)):
+            # 跳过同一层中使用过的元素，避免生成重复的子集
+            if i > startIndex and nums[i] == nums[i - 1]:        #去重逻辑在于 i > startIndex
+                continue
+            path.append(nums[i])  # 将当前元素添加到路径中
+            self.backtracking(nums, i + 1, path, result)  # 递归进入下一层
+            path.pop()  # 回溯，将当前元素从路径中移除
+
+
+#回溯 + 利用集合去重
+
+class Solution:
+    def subsetsWithDup(self, nums):
+        result = []  # 结果列表，用于存储符合条件的子集
+        path = []  # 当前路径，用于构建子集
+        nums.sort()  # 对数组进行排序，为了去重
+        self.backtracking(nums, 0, path, result)  # 调用回溯函数
+        return result  # 返回结果列表
+
+    def backtracking(self, nums, startIndex, path, result):
+        result.append(path[:])  # 将当前路径添加到结果列表，表示找到一个子集
+        used = set()  # 用集合记录已经使用过的元素，用于去重
+        for i in range(startIndex, len(nums)):
+            if nums[i] in used:  # 如果当前元素已经被使用过，跳过，避免生成重复的子集
+                continue
+            used.add(nums[i])  # 将当前元素加入已使用集合中
+            path.append(nums[i])  # 将当前元素添加到路径中
+            self.backtracking(nums, i + 1, path, result)  # 递归进入下一层
+            path.pop()  # 回溯，将当前元素从路径中移除
+
