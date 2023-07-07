@@ -1,0 +1,51 @@
+491.递增子序列
+https://leetcode.cn/problems/non-decreasing-subsequences/
+
+#回溯 利用set去重
+class Solution:
+    def findSubsequences(self, nums):
+        result = []  # 结果列表，用于存储符合条件的递增子序列
+        path = []  # 当前路径，用于构建递增子序列
+        self.backtracking(nums, 0, path, result)  # 调用回溯函数
+        return result  # 返回结果列表
+
+    def backtracking(self, nums, startIndex, path, result):
+        if len(path) > 1:
+            result.append(path[:])  # 将当前路径的副本添加到结果列表中，表示找到一个递增子序列
+
+        # 在下一次递归调用时创建了一个新的 uset 集合（uset = set()），
+        # 这样就相当于在下一层开始时，uset 集合是一个空集合，之前的记录已经丢失了
+
+        uset = set()  # 用于本层元素的去重
+
+  
+        for i in range(startIndex, len(nums)):
+            if (path and nums[i] < path[-1]) or nums[i] in uset:
+                continue
+            
+            uset.add(nums[i])  # 将当前元素加入集合，表示在本层已经使用过了
+            path.append(nums[i])  # 将当前元素添加到路径中
+            self.backtracking(nums, i + 1, path, result)  # 递归进入下一层
+            path.pop()  # 回溯，将当前元素从路径中移除
+
+回溯 利用哈希表去重
+class Solution:
+    def findSubsequences(self, nums):
+        result = []
+        path = []
+        self.backtracking(nums, 0, path, result)
+        return result
+
+    def backtracking(self, nums, startIndex, path, result):
+        if len(path) > 1:
+            result.append(path[:])  # 注意要使用切片将当前路径的副本加入结果集
+        
+        used = [0] * 201  # 使用数组来进行去重操作，题目说数值范围[-100, 100]
+        for i in range(startIndex, len(nums)):
+            if (path and nums[i] < path[-1]) or used[nums[i] + 100] == 1:
+                continue  # 如果当前元素小于上一个元素，或者已经使用过当前元素，则跳过当前元素
+            
+            used[nums[i] + 100] = 1  # 标记当前元素已经使用过
+            path.append(nums[i])  # 将当前元素加入当前递增子序列
+            self.backtracking(nums, i + 1, path, result)   # 递归进入下一层
+            path.pop()    # 回溯，将当前元素从路径中移除
