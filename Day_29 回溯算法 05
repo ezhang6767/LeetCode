@@ -49,3 +49,55 @@ class Solution:
             path.append(nums[i])  # 将当前元素加入当前递增子序列
             self.backtracking(nums, i + 1, path, result)   # 递归进入下一层
             path.pop()    # 回溯，将当前元素从路径中移除
+
+46.全排列
+https://leetcode.cn/problems/permutations/
+
+class Solution:
+    def permute(self, nums):
+        result = []
+        self.backtracking(nums, [], [False] * len(nums), result)
+        return result
+
+    def backtracking(self, nums, path, used, result):
+        if len(path) == len(nums):
+            result.append(path[:])  # 将当前路径的副本加入结果集
+            return
+
+        for i in range(len(nums)):
+            if used[i]:
+                continue  # 如果当前数字已经被使用过，则跳过当前数字，继续下一个数字的遍历
+
+            used[i] = True  # 将当前数字标记为已使用
+            path.append(nums[i])  # 将当前数字加入当前路径
+            self.backtracking(nums, path, used, result)  # 递归调用，继续搜索下一个数字
+            path.pop()  # 回溯，将当前数字从路径中弹出
+            used[i] = False  # 恢复当前数字的未使用状态
+
+47. 全排列 II
+https://leetcode.cn/problems/permutations-ii/description/
+
+
+class Solution:
+    def permuteUnique(self, nums):
+        nums.sort()  # 对数组进行排序，为了方便处理重复元素
+        result = []
+        self.backtracking(nums, [], [False] * len(nums), result)
+        return result
+
+    def backtracking(self, nums, path, used, result):
+        if len(path) == len(nums):
+            result.append(path[:])  # 将当前路径的副本加入结果集
+            return
+
+        for i in range(len(nums)):
+            if (i > 0 and nums[i] == nums[i - 1] and not used[i - 1]) or used[i]:
+                continue  # 如果当前数字已经被使用过，或者当前数字与前一个数字相同且前一个数字未被使用，则跳过当前数字
+
+            used[i] = True  # 将当前数字标记为已使用
+            path.append(nums[i])  # 将当前数字加入当前路径
+            self.backtracking(nums, path, used, result)  # 递归调用，继续搜索下一个数字
+            path.pop()  # 回溯，将当前数字从路径中弹出
+            used[i] = False  # 恢复当前数字的未使用状态
+
+
