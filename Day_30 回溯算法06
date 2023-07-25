@@ -1,2 +1,51 @@
 #332.重新安排行程
+#used数组法
+class Solution:
+    def findItinerary(self, tickets: List[List[str]]) -> List[str]:
+        tickets.sort()    # 先排序，这样一旦找到第一个可行路径，一定是字母排序最小的
+        used = [0] * len(tickets)
+        path = ['JFK']
+        results = []
+        self.backtracking(tickets, used, path, 'JFK', results)
+        return results[0]
 
+    """这里给出了主函数findItinerary，它接受一个字符串二维列表tickets作为输入，表示航班的起始和终止机场。
+    tickets是按照字母顺序排序的。used是一个记录航班是否已经使用的数组，
+    path用于记录当前行程，results是存储所有合法行程的列表。这个函数的目标是找到一个合法行程，并返回其中一个。"""
+
+    def backtracking(self, tickets, used, path, cur, results):
+        if len(path) == len(tickets) + 1:    # 终止条件：路径长度等于机票数量+1
+            results.append(path[:])          # 将当前路径添加到结果列表
+            return True
+
+    """这是回溯函数backtracking的定义，它会递归地搜索所有可能的行程。
+    当path的长度等于tickets长度加1时，说明找到了一个合法的行程，
+    将其拷贝加入results，并返回True表示找到了合法行程。"""
+
+        for i, ticket in enumerate(tickets):         # 遍历机票列表
+            if ticket[0] == cur and used[i] == 0:    # 找到起始机场为cur且未使用过的机票
+                used[i] = 1                          # 标记该机票为已使用
+                path.append(ticket[1])               # 将到达机场ticket[1]添加到路径中
+                state = self.backtracking(tickets, used, path, ticket[1], results)   # 递归搜索
+                path.pop()                           # 回溯，移除最后添加的到达机场
+                used[i] = 0                          # 标记该机票为未使用
+                if state:
+                    return True                      # 只要找到一个可行路径就返回，不继续搜索
+
+      """这是回溯函数的具体实现。它遍历tickets中的每个航班，并检查是否满足以下条件：
+      
+      起始机场与当前机场相同 (ticket[0] == cur)。
+      当前航班尚未被使用 (used[i] == 0)。
+      如果满足这两个条件，表示可以选择当前航班，于是进行以下操作：
+      
+      将当前航班标记为已使用 (used[i] = 1)。
+      将当前航班的终点机场加入行程路径 (path.append(ticket[1]))。
+      递归调用backtracking函数，从当前终点机场出发继续搜索下一个航班。
+      回溯，即撤销之前加入的终点机场，为下一次搜索做准备 (path.pop())。
+      将当前航班标记为未使用 (used[i] = 0)。
+      在递归调用中，如果找到了一个合法行程（self.backtracking(tickets, used, path, ticket[1], results)返回True），
+      则当前层的递归也会返回True，直接结束搜索。
+      
+      整体上，这段代码利用回溯算法进行了深度优先搜索，尝试从每个起始机场出发找到一个合法的行程，
+      并将其存储在results中。一旦找到一个合法行程，即完成任务，函数返回结果。
+      由于题目中保证一定存在至少一个合法行程，因此直接返回results[0]即可得到一个合法行程。"""
