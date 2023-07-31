@@ -105,3 +105,62 @@ class Solution:
 
 为什么这种 DFS 逆序可以获得正确答案，其实和有向图的欧拉路径求法有关，
 对原理更加详细剖析见题解：https://leetcode.cn/problems/reconstruct-itinerary/solutions/8209/javadfsjie-fa-by-pwrliang/
+
+51. N 皇后
+https://leetcode.cn/problems/n-queens/description/
+
+
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        result = []  # 存储最终结果的二维字符串数组
+
+        chessboard = ['.' * n for _ in range(n)]  # 初始化棋盘，使用列表推导式生成一个长度为n的列表，每个元素都是长度为n的字符串，表示初始棋盘状态
+        self.backtracking(n, 0, chessboard, result)  # 回溯求解
+        return [[''.join(row) for row in solution] for solution in result]  # 返回结果集，将结果集中每个解转换成一个字符串列表的形式
+
+    def backtracking(self, n: int, row: int, chessboard: List[str], result: List[List[str]]) -> None:
+        if row == n:
+            result.append(chessboard[:])  # 棋盘填满，将当前解加入结果集
+            return
+
+        for col in range(n):
+            if self.isValid(row, col, chessboard):
+                chessboard[row] = chessboard[row][:col] + 'Q' + chessboard[row][col+1:]  # 放置皇后，在当前行的col列放置'Q'
+                self.backtracking(n, row + 1, chessboard, result)  # 递归到下一行
+                chessboard[row] = chessboard[row][:col] + '.' + chessboard[row][col+1:]  # 回溯，撤销当前位置的皇后
+
+    def isValid(self, row: int, col: int, chessboard: List[str]) -> bool:
+        # 检查列
+        for i in range(row):
+            if chessboard[i][col] == 'Q':
+                return False  # 当前列已经存在皇后，不合法
+
+        # 检查 45 度角是否有皇后
+        i, j = row - 1, col - 1
+        while i >= 0 and j >= 0:
+            if chessboard[i][j] == 'Q':
+                return False  # 左上方向已经存在皇后，不合法
+            i -= 1
+            j -= 1
+
+        # 检查 135 度角是否有皇后
+        i, j = row - 1, col + 1
+        while i >= 0 and j < len(chessboard):
+            if chessboard[i][j] == 'Q':
+                return False  # 右上方向已经存在皇后，不合法
+            i -= 1
+            j += 1
+
+        return True  # 当前位置合法
+
+Q/A:return [[''.join(row) for row in solution] for solution in result] 能不能解释下这句
+
+当调用 self.solveNQueens(n) 方法求解 N 皇后问题后，result 变量中存储了所有的解决方案。
+每个解决方案都是一个 N × N 的棋盘状态，其中 'Q' 表示放置了皇后的位置，'.' 表示空位置。
+
+然而，result 中的每个解决方案都是用一个列表来表示，
+而我们通常更希望以字符串形式展示结果。
+因此，这句代码的目的是将 result 中的每个解决方案转换为字符串列表，
+在这个过程中，''.join(row) 的操作会去掉每个列表元素之间的 ' 符号，
+从而将每一行的元素连接成一个字符串，形成一个新的字符串列表。
+以更直观的方式展示 N 皇后问题的解。
