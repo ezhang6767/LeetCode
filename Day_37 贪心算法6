@@ -126,3 +126,99 @@ class Solution:
                 # 使用字符串切片操作将修改后的前面部分与后面部分进行拼接
                 strNum = strNum[:i - 1] + str(int(strNum[i - 1]) - 1) + '9' * (len(strNum) - i)       
         return int(strNum)
+
+968. 监控二叉树
+
+https://leetcode.cn/problems/binary-tree-cameras/
+
+#贪心+二叉树
+class Solution:
+         # Greedy Algo:
+        # 从下往上安装摄像头：跳过leaves这样安装数量最少，局部最优 -> 全局最优
+        # 先给leaves的父节点安装，然后每隔两层节点安装一个摄像头，直到Head
+        # 0: 该节点未覆盖
+        # 1: 该节点有摄像头
+        # 2: 该节点有覆盖
+    def minCameraCover(self, root: TreeNode) -> int:
+        # 定义递归函数
+        result = [0]  # 用于记录摄像头的安装数量
+        if self.traversal(root, result) == 0:
+            result[0] += 1
+
+        return result[0]
+
+        
+    def traversal(self, cur: TreeNode, result: List[int]) -> int:
+        if not cur:
+            return 2
+
+        left = self.traversal(cur.left, result)
+        right = self.traversal(cur.right, result)
+
+        # 情况1: 左右节点都有覆盖
+        if left == 2 and right == 2:
+            return 0
+
+        # 情况2:
+        # left == 0 && right == 0 左右节点无覆盖
+        # left == 1 && right == 0 左节点有摄像头，右节点无覆盖
+        # left == 0 && right == 1 左节点无覆盖，右节点有摄像头
+        # left == 0 && right == 2 左节点无覆盖，右节点覆盖
+        # left == 2 && right == 0 左节点覆盖，右节点无覆盖
+        if left == 0 or right == 0:
+            result[0] += 1
+            return 1
+
+        # 情况3:
+        # left == 1 && right == 2 左节点有摄像头，右节点有覆盖
+        # left == 2 && right == 1 左节点有覆盖，右节点有摄像头
+        # left == 1 && right == 1 左右节点都有摄像头
+        if left == 1 or right == 1:
+            return 2
+
+#Q:为什么使用使用列表来传递 result?
+#A:这涉及到Python中参数传递的方式，以及不可变对象和可变对象的概念。
+
+在Python中，函数的参数传递有两种方式：值传递（传递的是对象的引用副本）和引用传递。
+对于不可变对象（如int、str等），函数内部对参数的修改不会影响外部的变量值。
+但对于可变对象（如列表、字典等），函数内部的修改会影响外部变量的值。
+
+在你的情况下，需要在递归调用过程中跟踪一个值，以便在不同的递归层级中进行累加。
+如果直接传递一个int作为参数，由于int是不可变的，每次递归调用都会创建一个新的int对象，
+而不会在原来的int对象上进行修改。因此，你选择使用一个列表来传递可变对象，
+以便在递归调用中修改列表内部的值，从而在不同递归层级中保持累加结果。
+
+这种方法在Python中经常被用来在递归过程中保持可变对象的状态，
+因为列表、字典等可变对象可以在函数内部进行修改，而不会影响到新的对象创建。
+
+
+
+
+
+#result的不同定义写法：
+class Solution:
+    def minCameraCover(self, root: Optional[TreeNode]) -> int:
+        self.result = 0
+        if self.traversal(root) == 0:
+            self.result += 1
+        return self.result
+
+
+    
+    def traversal(self, cur: TreeNode) -> int:
+        if not cur:
+            return 2
+
+        left = self.traversal(cur.left)
+        right = self.traversal(cur.right)
+
+        if left == 2 and right == 2:
+            return 0
+
+        if left == 0 or right == 0:
+            self.result += 1
+            return 1
+
+        if left == 1 or right == 1:
+            return 2
+
