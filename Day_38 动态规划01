@@ -130,5 +130,5 @@ class Solution:
             total = prev1 + prev2
             prev1, prev2 = prev2, total
         
-        #return total if n > 2 else prev2
-        return preve2    
+        #return total if n > 2 else prev2    #n=1 return n 即1; n=2 return prev2 即2; n>3, return total
+        return preve2                        #或者简写成prev2 因为prev2 = total
