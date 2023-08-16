@@ -11,3 +11,124 @@ A:
 3.dp数组如何初始化
 4.确定遍历顺序
 5.举例推导dp数组
+
+
+509. 斐波那契数
+https://leetcode.cn/problems/fibonacci-number/
+
+
+#动态规划（版本一）
+class Solution:
+    def fib(self, n: int) -> int:
+       
+        # 排除 Corner Case
+        if n == 0:
+            return 0
+        
+        # 创建 dp table 
+        dp = [0] * (n + 1)
+
+        # 初始化 dp 数组
+        dp[0] = 0
+        dp[1] = 1
+
+        # 遍历顺序: 由前向后。因为后面要用到前面的状态
+        for i in range(2, n + 1):
+
+            # 确定递归公式/状态转移公式
+            dp[i] = dp[i - 1] + dp[i - 2]
+        
+        # 返回答案
+        return dp[n]
+
+#动态规划（版本二）
+class Solution:
+    def fib(self, n: int) -> int:
+        if n <= 1:
+            return n
+        
+        dp = [0, 1]
+        
+        for i in range(2, n + 1):
+            total = dp[0] + dp[1]
+            dp[0] = dp[1]
+            dp[1] = total
+        
+        return dp[1]
+
+#动态规划（版本三）
+class Solution:
+    def fib(self, n: int) -> int:
+        if n <= 1:
+            return n
+        
+        prev1, prev2 = 0, 1
+        
+        for _ in range(2, n + 1):
+            curr = prev1 + prev2
+            prev1, prev2 = prev2, curr
+        
+        return prev2
+
+#递归（版本一）
+class Solution:
+    def fib(self, n: int) -> int:
+        if n < 2:
+            return n
+        return self.fib(n - 1) + self.fib(n - 2)
+
+70. 爬楼梯
+https://leetcode.cn/problems/climbing-stairs/description/
+
+动态规划（版本一）
+# 空间复杂度为O(n)版本
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 1:
+            return n
+        
+        dp = [0] * (n + 1)
+        dp[1] = 1
+        dp[2] = 2
+        
+        for i in range(3, n + 1):
+            dp[i] = dp[i - 1] + dp[i - 2]
+        
+        return dp[n]
+
+动态规划（版本二）
+# 空间复杂度为O(3)版本
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 1:
+            return n
+        
+        dp = [0] * 3
+        dp[1] = 1
+        dp[2] = 2
+        
+        for i in range(3, n + 1):
+            total = dp[1] + dp[2]
+            dp[1] = dp[2]
+            dp[2] = total
+        
+        return dp[2]
+
+
+动态规划（版本三）
+# 空间复杂度为O(1)版本
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 1:
+            return n
+        
+        prev1 = 1
+        prev2 = 2
+        total = 0  # 初始化total
+
+        for i in range(3, n+1):
+            total = prev1 + prev2
+            prev1, prev2 = prev2, total
+        
+        #return total if n > 2 else prev2
+        return preve2    
