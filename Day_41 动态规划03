@@ -1,0 +1,39 @@
+343. 整数拆分
+https://leetcode.cn/problems/integer-break/description/
+
+class Solution:
+         # 假设对正整数 i 拆分出的第一个正整数是 j（1 <= j < i），则有以下两种方案：
+        # 1) 将 i 拆分成 j 和 i−j 的和，且 i−j 不再拆分成多个正整数，此时的乘积是 j * (i-j)
+        # 2) 将 i 拆分成 j 和 i−j 的和，且 i−j 继续拆分成多个正整数，此时的乘积是 j * dp[i-j]
+    def integerBreak(self, n):
+        dp = [0] * (n + 1)   # 创建一个大小为n+1的数组来存储计算结果
+        dp[2] = 1  # 初始化dp[2]为1，因为当n=2时，只有一个切割方式1+1=2，乘积为1
+       
+        # 从3开始计算，直到n
+        for i in range(3, n + 1):
+            # 遍历所有可能的切割点
+            for j in range(1, i // 2 + 1):
+
+                # 计算切割点j和剩余部分(i-j)的乘积，并与之前的结果进行比较取较大值
+                
+                dp[i] = max(dp[i], (i - j) * j, dp[i - j] * j)
+        
+        return dp[n]  # 返回最终的计算结果
+
+96. 不同的二叉搜索树
+https://leetcode.cn/problems/unique-binary-search-trees/
+
+1. dp[i] ： 1到i为节点组成的二叉搜索树的个数为dp[i]。
+2. 递推公式：dp[i] += dp[j - 1] * dp[i - j]; ，j-1 为j为头结点左子树节点数量，i-j 为以j为头结点右子树节点数量
+3. 初始化dp[0] = 1
+4. 从递归公式：dp[i] += dp[j - 1] * dp[i - j]可以看出，节点数为i的状态是依靠 i之前节点数的状态。
+5. 举例推导dp数组
+
+class Solution:
+    def numTrees(self, n: int) -> int:
+        dp = [0] * (n + 1)  # 创建一个长度为n+1的数组，初始化为0
+        dp[0] = 1  # 当n为0时，只有一种情况，即空树，所以dp[0] = 1
+        for i in range(1, n + 1):  # 遍历从1到n的每个数字
+            for j in range(1, i + 1):  # 对于每个数字i，计算以i为根节点的二叉搜索树的数量
+                dp[i] += dp[j - 1] * dp[i - j]  # 利用动态规划的思想，累加左子树和右子树的组合数量
+        return dp[n]  # 返回以1到n为节点的二叉搜索树的总数量
