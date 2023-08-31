@@ -73,3 +73,52 @@ if __name__ == "__main__":
     bagWeight = 4
     result = test_CompletePack(weight, value, bagWeight)
     print(result)
+
+
+Day_44 动态规划06
+https://leetcode.cn/problems/coin-change-ii/
+
+#二维DP
+class Solution:
+    def change(self, amount: int, coins: list) -> int:
+        # 创建二维dp数组，dp[i][j]表示使用前i种硬币凑成金额j的方式数量
+        dp = [[0] * (amount + 1) for _ in range(len(coins) + 1)]
+        
+        # 初始化状态，凑成金额0的方式数量为1
+        for i in range(len(coins) + 1):
+            dp[i][0] = 1
+        
+        # 遍历硬币和金额
+        for i in range(1, len(coins) + 1):
+            for j in range(1, amount + 1):
+                if j < coins[i - 1]:
+                    # 如果当前金额小于硬币面额，无法选取该硬币
+                    dp[i][j] = dp[i - 1][j]
+                else:
+                    # 可以选择选取或不选取当前硬币
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - coins[i - 1]]
+        
+        # 打印状态图
+        for row in dp:
+            print(row)
+        
+        return dp[len(coins)][amount]
+
+# 测试代码
+solution = Solution()
+amount = 5
+coins = [1, 2, 5]
+result = solution.change(amount, coins)
+print("Result:", result)
+
+#一维DP
+class Solution:
+    def change(self, amount: int, coins: List[int]) -> int:
+        dp = [0]*(amount + 1)
+        dp[0] = 1
+        # 遍历物品
+        for i in range(len(coins)):
+            # 遍历背包
+            for j in range(coins[i], amount + 1):
+                dp[j] += dp[j - coins[i]]
+        return dp[amount]
