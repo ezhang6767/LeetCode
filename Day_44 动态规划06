@@ -77,6 +77,9 @@ if __name__ == "__main__":
 
 Day_44 动态规划06
 https://leetcode.cn/problems/coin-change-ii/
+1. 先遍历物品，后遍历背包为排列，反之为组合
+2. 递推公式参考494.目标和
+
 
 #二维DP
 class Solution:
