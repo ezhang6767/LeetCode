@@ -91,4 +91,49 @@ class Solution:
 
         return cur_max
 
+337. 打家劫舍 III
+https://leetcode.cn/problems/house-robber-iii/description/
+
+
+#1 dp[0]: 不偷该节点获得的最大金钱  dp[1]: 偷该节点获得的最大金钱
+#2 终止条件：遇到空节点，无论偷/不偷都是0，所以返回
+#3 遍历顺序：后序遍历，因为需要通过递归函数的返回值来确定下一步计算。
+#           递归左/右节点，得到左/右节点偷/不偷的金钱
+#4 确定单层递归的逻辑。
+#   如果偷当前节点，则不能偷左右孩子。val1 = cur->val + left[0] + right[0]
+#   如果不偷当前节点，则能偷左右孩子，至于偷不偷取决于偷/不偷的最大值。val2 = max(left[0], left[1]) + max(right[0], right[1])
+#5 距离推导DP数组
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rob(self, root: Optional[TreeNode]) -> int:
+        # dp数组（dp table）以及下标的含义：
+        # 1. 下标为 0 记录 **不偷该节点** 所得到的的最大金钱
+        # 2. 下标为 1 记录 **偷该节点** 所得到的的最大金钱
+        dp = self.traversal(root)
+        return max(dp)
+
+    # 要用后序遍历, 因为要通过递归函数的返回值来做下一步计算
+    def traversal(self, node):
+        
+        # 递归终止条件，就是遇到了空节点，那肯定是不偷的
+        if not node:
+            return (0, 0)
+
+        left = self.traversal(node.left)
+        right = self.traversal(node.right)
+
+        # 不偷当前节点, 偷子节点
+        val_0 = max(left[0], left[1]) + max(right[0], right[1])
+
+        # 偷当前节点, 不偷子节点
+        val_1 = node.val + left[0] + right[0]
+
+        return (val_0, val_1)
 
