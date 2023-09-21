@@ -1,0 +1,79 @@
+739. 每日温度 
+https://leetcode.cn/problems/daily-temperatures/description/
+
+1. stack中记录下标i
+2. 当遍历温度大于栈口i对应的温度时，计算answer，弹出栈口i
+3. 当遍历温度小于等于栈口i对应的温度时，将遍历温度下标i加入栈
+
+
+
+
+#未精简版本
+
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        answer = [0]*len(temperatures)
+        stack = [0]
+        for i in range(1,len(temperatures)):
+            # 情况一和情况二
+            if temperatures[i]<=temperatures[stack[-1]]:
+                stack.append(i)
+            # 情况三
+            else:
+                while len(stack) != 0 and temperatures[i]>temperatures[stack[-1]]:
+                    answer[stack[-1]]=i-stack[-1]
+                    stack.pop()
+                stack.append(i)
+
+        return answer
+
+#精简版本
+
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        answer = [0]*len(temperatures)
+        stack = []
+        for i in range(len(temperatures)):
+            while len(stack)>0 and temperatures[i] > temperatures[stack[-1]]:
+                answer[stack[-1]] = i - stack[-1]
+                stack.pop()
+            stack.append(i)
+        return answer
+
+
+496. 下一个更大元素 I
+https://leetcode.cn/problems/next-greater-element-i/description/
+
+#难点分析：
+#1.比较绕
+#2.考验代码能力
+#3.单调栈中入栈的是下标
+#4.如何初始化result数组
+#5.结果集中加入映射下标对应值
+#6.本质思路分析:
+
+"""由于数组nums1是nums2的子集，整体思路是先求解出数组nums2中每个元素对应的下一个更大元素。然后存入map中，其中key是nums2中的元素值，value是下一个更大的元素。最后，遍历数组nums1，拿当前考察的元素作为key在map中获取value即可。
+
+至此，关键问题是如何求解出数组nums2中每个元素对应的下一个更大元素。"""
+
+
+
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        answer = [-1] * len(nums1)
+        stack = []
+
+        for i in range(len(nums2)):
+            while len(stack) != 0 and nums2[i] > nums2[stack[-1]]:
+                if nums2[stack[-1]] in nums1:
+                    index = nums1.index(nums2[stack[-1]])
+                    answer[index] = nums2[i]
+                stack.pop()
+            stack.append(i)
+        return answer
+
+
+
+
+
+496.下一个更大元素 I 
